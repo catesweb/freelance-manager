@@ -55,21 +55,28 @@ public partial class ProjectsViewModel : ViewModelBase
         if (EditorClient is not null) Editor.ClientId = EditorClient.Id;
         if (!Editor.IsValid) { StatusMessage = "Title and client are required."; return; }
 
-        if (Editor.Id == 0)
+        try
         {
-            var model = new Project();
-            Editor.ApplyTo(model);
-            await _projects.AddAsync(model);
-        }
-        else
-        {
-            var model = await _projects.GetAsync(Editor.Id);
-            if (model is not null) { Editor.ApplyTo(model); await _projects.UpdateAsync(model); }
-        }
+            if (Editor.Id == 0)
+            {
+                var model = new Project();
+                Editor.ApplyTo(model);
+                await _projects.AddAsync(model);
+            }
+            else
+            {
+                var model = await _projects.GetAsync(Editor.Id);
+                if (model is not null) { Editor.ApplyTo(model); await _projects.UpdateAsync(model); }
+            }
 
-        Editor = null;
-        StatusMessage = "Saved.";
-        await LoadAsync();
+            Editor = null;
+            StatusMessage = "Saved.";
+            await LoadAsync();
+        }
+        catch (System.Exception ex)
+        {
+            StatusMessage = $"Save failed: {ex.Message}";
+        }
     }
 
     [RelayCommand] private void Cancel() => Editor = null;
@@ -78,8 +85,15 @@ public partial class ProjectsViewModel : ViewModelBase
     private async Task Delete()
     {
         if (Selected is null) return;
-        await _projects.DeleteAsync(Selected.Id);
-        await LoadAsync();
-        StatusMessage = "Deleted.";
+        try
+        {
+            await _projects.DeleteAsync(Selected.Id);
+            await LoadAsync();
+            StatusMessage = "Deleted.";
+        }
+        catch (System.Exception ex)
+        {
+            StatusMessage = $"Delete failed: {ex.Message}";
+        }
     }
 }

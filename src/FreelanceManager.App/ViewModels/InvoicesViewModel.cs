@@ -87,13 +87,20 @@ public partial class InvoicesViewModel : ViewModelBase
         if (EditorClient is not null) Editor.ClientId = EditorClient.Id;
         if (!Editor.IsValid) { StatusMessage = "Client and invoice number are required."; return; }
 
-        var model = Editor.ToModel();
-        if (model.Id == 0) await _invoices.AddAsync(model);
-        else await _invoices.UpdateAsync(model);
+        try
+        {
+            var model = Editor.ToModel();
+            if (model.Id == 0) await _invoices.AddAsync(model);
+            else await _invoices.UpdateAsync(model);
 
-        Editor = null;
-        StatusMessage = "Saved.";
-        await LoadAsync();
+            Editor = null;
+            StatusMessage = "Saved.";
+            await LoadAsync();
+        }
+        catch (System.Exception ex)
+        {
+            StatusMessage = $"Save failed: {ex.Message}";
+        }
     }
 
     [RelayCommand] private void Cancel() => Editor = null;
@@ -102,24 +109,38 @@ public partial class InvoicesViewModel : ViewModelBase
     private async Task Delete()
     {
         if (Selected is null) return;
-        await _invoices.DeleteAsync(Selected.Id);
-        await LoadAsync();
-        StatusMessage = "Deleted.";
+        try
+        {
+            await _invoices.DeleteAsync(Selected.Id);
+            await LoadAsync();
+            StatusMessage = "Deleted.";
+        }
+        catch (System.Exception ex)
+        {
+            StatusMessage = $"Delete failed: {ex.Message}";
+        }
     }
 
     [RelayCommand]
     private async Task ExportPdf()
     {
         if (Selected is null || SavePdfPathProvider is null) return;
-        var invoice = await _invoices.GetAsync(Selected.Id);
-        if (invoice is null) return;
+        try
+        {
+            var invoice = await _invoices.GetAsync(Selected.Id);
+            if (invoice is null) return;
 
-        string? path = await SavePdfPathProvider($"{invoice.Number}.pdf");
-        if (string.IsNullOrWhiteSpace(path)) return;
+            string? path = await SavePdfPathProvider($"{invoice.Number}.pdf");
+            if (string.IsNullOrWhiteSpace(path)) return;
 
-        var profile = await _profiles.GetAsync();
-        _pdf.ExportInvoice(invoice, profile, path);
-        StatusMessage = $"Exported to {path}";
+            var profile = await _profiles.GetAsync();
+            _pdf.ExportInvoice(invoice, profile, path);
+            StatusMessage = $"Exported to {path}";
+        }
+        catch (System.Exception ex)
+        {
+            StatusMessage = $"Export failed: {ex.Message}";
+        }
     }
 }
 
