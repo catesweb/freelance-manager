@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/FreelanceManager.App/FreelanceManager.App.csproj" />
+    <Project Path="src/FreelanceManager.Core/FreelanceManager.Core.csproj" />
+    <Project Path="src/FreelanceManager.Data/FreelanceManager.Data.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/FreelanceManager.Tests/FreelanceManager.Tests.csproj" />
+  </Folder>
+</Solution>
