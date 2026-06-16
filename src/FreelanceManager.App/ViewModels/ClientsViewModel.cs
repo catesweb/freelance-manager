@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FreelanceManager.App.Services;
 using FreelanceManager.Core.Models;
 using FreelanceManager.Data;
 using FreelanceManager.Data.Repositories;
@@ -10,6 +11,8 @@ namespace FreelanceManager.App.ViewModels;
 public partial class ClientsViewModel : ViewModelBase
 {
     private readonly IClientRepository _repo;
+    private readonly IDialogService _dialogs;
+    private readonly INotificationService _notes;
 
     public ObservableCollection<Client> Clients { get; } = new();
 
@@ -17,9 +20,11 @@ public partial class ClientsViewModel : ViewModelBase
     [ObservableProperty] private ClientEditViewModel? _editor;
     [ObservableProperty] private string? _statusMessage;
 
-    public ClientsViewModel(IClientRepository repo)
+    public ClientsViewModel(IClientRepository repo, IDialogService dialogs, INotificationService notes)
     {
         _repo = repo;
+        _dialogs = dialogs;
+        _notes = notes;
         _ = LoadAsync();
     }
 
@@ -32,7 +37,7 @@ public partial class ClientsViewModel : ViewModelBase
         }
         catch (System.Exception ex)
         {
-            StatusMessage = $"Load failed: {ex.Message}";
+            _notes.Show($"Load failed: {ex.Message}", NotificationKind.Error);
         }
     }
 
@@ -76,15 +81,18 @@ public partial class ClientsViewModel : ViewModelBase
     private async Task Delete()
     {
         if (Selected is null) return;
+        if (!await _dialogs.ConfirmAsync("Delete client",
+                $"Delete \"{Selected.Name}\"? This cannot be undone.", "Delete"))
+            return;
         try
         {
             await _repo.DeleteAsync(Selected.Id);
             await LoadAsync();
-            StatusMessage = "Deleted.";
+            _notes.Show("Client deleted.", NotificationKind.Success);
         }
         catch (ClientInUseException ex)
         {
-            StatusMessage = ex.Message;
+            _notes.Show(ex.Message, NotificationKind.Error);
         }
     }
 }
