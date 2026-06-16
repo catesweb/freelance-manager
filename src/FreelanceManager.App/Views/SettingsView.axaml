@@ -1,0 +1,26 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:FreelanceManager.App.ViewModels"
+             x:Class="FreelanceManager.App.Views.SettingsView"
+             x:DataType="vm:SettingsViewModel">
+  <ScrollViewer>
+    <StackPanel Spacing="8" MaxWidth="480" HorizontalAlignment="Left">
+      <TextBlock Text="Settings" FontSize="22" FontWeight="Bold"/>
+      <TextBlock Text="Business profile" FontWeight="Bold"/>
+      <TextBox Watermark="Business name" Text="{Binding Name}"/>
+      <TextBox Watermark="Address" Text="{Binding Address}" AcceptsReturn="True" Height="60"/>
+      <TextBox Watermark="Email" Text="{Binding Email}"/>
+      <TextBox Watermark="Phone" Text="{Binding Phone}"/>
+      <TextBox Watermark="Logo path" Text="{Binding LogoPath}"/>
+      <TextBlock Text="Invoice defaults" FontWeight="Bold" Margin="0,8,0,0"/>
+      <TextBox Watermark="Default currency (e.g. USD)" Text="{Binding DefaultCurrency}"/>
+      <TextBox Watermark="Default tax rate (e.g. 0.2)" Text="{Binding DefaultTaxRate}"/>
+      <TextBox Watermark="Invoice number format" Text="{Binding InvoiceNumberFormat}"/>
+      <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,8,0,0">
+        <Button Content="Save" Command="{Binding SaveCommand}"/>
+        <Button Content="Backup now" Command="{Binding BackupNowCommand}"/>
+      </StackPanel>
+      <TextBlock Text="{Binding StatusMessage}" Foreground="#080"/>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

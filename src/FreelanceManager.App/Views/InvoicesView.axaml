@@ -1,0 +1,79 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:FreelanceManager.App.ViewModels"
+             x:Class="FreelanceManager.App.Views.InvoicesView"
+             x:DataType="vm:InvoicesViewModel">
+  <Grid RowDefinitions="Auto,*,Auto">
+    <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="6" Margin="0,0,0,8">
+      <TextBlock Text="Invoices" FontSize="22" FontWeight="Bold" VerticalAlignment="Center"/>
+      <Button Content="New" Command="{Binding NewCommand}"/>
+      <Button Content="Edit" Command="{Binding EditCommand}"/>
+      <Button Content="Delete" Command="{Binding DeleteCommand}"/>
+      <Button Content="Export PDF" Command="{Binding ExportPdfCommand}"/>
+    </StackPanel>
+
+    <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
+      <DataGrid Grid.Column="0" ItemsSource="{Binding Invoices}"
+                SelectedItem="{Binding Selected}" IsReadOnly="True"
+                AutoGenerateColumns="False">
+        <DataGrid.Columns>
+          <DataGridTextColumn Header="Number" Binding="{Binding Number}"/>
+          <DataGridTextColumn Header="Client" Binding="{Binding ClientName}"/>
+          <DataGridTextColumn Header="Issued" Binding="{Binding IssueDate, StringFormat={}{0:yyyy-MM-dd}}"/>
+          <DataGridTextColumn Header="Due" Binding="{Binding DueDate, StringFormat={}{0:yyyy-MM-dd}}"/>
+          <DataGridTextColumn Header="Status" Binding="{Binding Status}"/>
+          <DataGridTextColumn Header="Total" Binding="{Binding Total, StringFormat={}{0:0.00}}"/>
+        </DataGrid.Columns>
+      </DataGrid>
+
+      <ScrollViewer Grid.Column="1" Width="420" Margin="8,0,0,0"
+                    IsVisible="{Binding Editor, Converter={x:Static ObjectConverters.IsNotNull}}">
+        <Border Padding="10" Background="#f4f4f4" CornerRadius="6">
+          <StackPanel Spacing="6">
+            <TextBlock Text="Edit invoice" FontWeight="Bold"/>
+            <TextBlock Text="Client *"/>
+            <ComboBox HorizontalAlignment="Stretch"
+                      ItemsSource="{Binding ClientOptions}" SelectedItem="{Binding EditorClient}">
+              <ComboBox.ItemTemplate>
+                <DataTemplate><TextBlock Text="{Binding Name}"/></DataTemplate>
+              </ComboBox.ItemTemplate>
+            </ComboBox>
+            <StackPanel Spacing="6" DataContext="{Binding Editor}">
+              <TextBox Watermark="Number" Text="{Binding Number}"/>
+              <TextBlock Text="Status"/>
+              <ComboBox HorizontalAlignment="Stretch"
+                        ItemsSource="{Binding StatusOptions}" SelectedItem="{Binding Status}"/>
+              <DatePicker SelectedDate="{Binding IssueDate}"/>
+              <DatePicker SelectedDate="{Binding DueDate}"/>
+              <TextBox Watermark="Tax rate (e.g. 0.2)" Text="{Binding TaxRate}"/>
+              <TextBlock Text="Line items" FontWeight="Bold" Margin="0,6,0,0"/>
+              <DataGrid ItemsSource="{Binding Lines}" AutoGenerateColumns="False" Height="180">
+                <DataGrid.Columns>
+                  <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="*"/>
+                  <DataGridTextColumn Header="Qty" Binding="{Binding Quantity}"/>
+                  <DataGridTextColumn Header="Unit" Binding="{Binding UnitPrice}"/>
+                  <DataGridTextColumn Header="Total" Binding="{Binding LineTotal, StringFormat={}{0:0.00}}" IsReadOnly="True"/>
+                </DataGrid.Columns>
+              </DataGrid>
+              <StackPanel Orientation="Horizontal" Spacing="6">
+                <Button Content="Add line" Command="{Binding AddLineCommand}"/>
+              </StackPanel>
+              <TextBlock Text="{Binding Subtotal, StringFormat=Subtotal: {0:0.00}}"/>
+              <TextBlock Text="{Binding Tax, StringFormat=Tax: {0:0.00}}"/>
+              <TextBlock Text="{Binding Total, StringFormat=Total: {0:0.00}}" FontWeight="Bold"/>
+              <TextBox Watermark="Notes" Text="{Binding Notes}" AcceptsReturn="True" Height="50"/>
+            </StackPanel>
+          </StackPanel>
+        </Border>
+      </ScrollViewer>
+    </Grid>
+
+    <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="6" Margin="0,8,0,0">
+      <Button Content="Save" Command="{Binding SaveCommand}"
+              IsVisible="{Binding Editor, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+      <Button Content="Cancel" Command="{Binding CancelCommand}"
+              IsVisible="{Binding Editor, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+      <TextBlock Text="{Binding StatusMessage}" Foreground="#a00" VerticalAlignment="Center"/>
+    </StackPanel>
+  </Grid>
+</UserControl>

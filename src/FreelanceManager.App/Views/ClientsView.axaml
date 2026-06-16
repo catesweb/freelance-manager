@@ -1,0 +1,48 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:FreelanceManager.App.ViewModels"
+             x:Class="FreelanceManager.App.Views.ClientsView"
+             x:DataType="vm:ClientsViewModel">
+  <Grid RowDefinitions="Auto,*,Auto">
+    <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="6" Margin="0,0,0,8">
+      <TextBlock Text="Clients" FontSize="22" FontWeight="Bold" VerticalAlignment="Center"/>
+      <Button Content="New" Command="{Binding NewCommand}"/>
+      <Button Content="Edit" Command="{Binding EditCommand}"/>
+      <Button Content="Delete" Command="{Binding DeleteCommand}"/>
+    </StackPanel>
+
+    <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
+      <DataGrid Grid.Column="0" ItemsSource="{Binding Clients}"
+                SelectedItem="{Binding Selected}" IsReadOnly="True"
+                AutoGenerateColumns="False">
+        <DataGrid.Columns>
+          <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
+          <DataGridTextColumn Header="Company" Binding="{Binding Company}"/>
+          <DataGridTextColumn Header="Email" Binding="{Binding Email}"/>
+        </DataGrid.Columns>
+      </DataGrid>
+
+      <Border Grid.Column="1" Width="320" Margin="8,0,0,0" Padding="10"
+              Background="#f4f4f4" CornerRadius="6"
+              IsVisible="{Binding Editor, Converter={x:Static ObjectConverters.IsNotNull}}">
+        <StackPanel Spacing="6" DataContext="{Binding Editor}">
+          <TextBlock Text="Edit client" FontWeight="Bold"/>
+          <TextBox Watermark="Name *" Text="{Binding Name}"/>
+          <TextBox Watermark="Company" Text="{Binding Company}"/>
+          <TextBox Watermark="Email" Text="{Binding Email}"/>
+          <TextBox Watermark="Phone" Text="{Binding Phone}"/>
+          <TextBox Watermark="Address" Text="{Binding Address}" AcceptsReturn="True" Height="60"/>
+          <TextBox Watermark="Notes" Text="{Binding Notes}" AcceptsReturn="True" Height="60"/>
+        </StackPanel>
+      </Border>
+    </Grid>
+
+    <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="6" Margin="0,8,0,0">
+      <Button Content="Save" Command="{Binding SaveCommand}"
+              IsVisible="{Binding Editor, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+      <Button Content="Cancel" Command="{Binding CancelCommand}"
+              IsVisible="{Binding Editor, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+      <TextBlock Text="{Binding StatusMessage}" Foreground="#a00" VerticalAlignment="Center"/>
+    </StackPanel>
+  </Grid>
+</UserControl>
