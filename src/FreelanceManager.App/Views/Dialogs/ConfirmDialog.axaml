@@ -1,0 +1,17 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="FreelanceManager.App.Views.Dialogs.ConfirmDialog"
+        x:CompileBindings="False"
+        Width="380" SizeToContent="Height" CanResize="False"
+        WindowStartupLocation="CenterOwner"
+        Background="{DynamicResource BgCanvas}"
+        Title="{Binding TitleText}">
+  <StackPanel Margin="20" Spacing="16">
+    <TextBlock Classes="SectionHeading" Text="{Binding TitleText}"/>
+    <TextBlock Classes="Body" TextWrapping="Wrap" Text="{Binding MessageText}"/>
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+      <Button Classes="secondary" Content="{Binding CancelText}" Click="OnCancel"/>
+      <Button Classes="danger" Content="{Binding ConfirmText}" Click="OnConfirm"/>
+    </StackPanel>
+  </StackPanel>
+</Window>

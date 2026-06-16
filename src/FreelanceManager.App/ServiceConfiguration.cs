@@ -23,6 +23,7 @@ public static class ServiceConfiguration
         services.AddSingleton<IBackupService, BackupService>();
         services.AddSingleton<IPdfExporter, QuestPdfInvoiceExporter>();
         services.AddSingleton<IThemeService, ThemeService>();
+        services.AddSingleton<IDialogService, DialogService>();
         services.AddSingleton<NotificationService>();
         services.AddSingleton<INotificationService>(sp => sp.GetRequiredService<NotificationService>());
 
