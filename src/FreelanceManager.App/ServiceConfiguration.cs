@@ -1,4 +1,5 @@
 using FreelanceManager.App.Pdf;
+using FreelanceManager.App.Services;
 using FreelanceManager.App.ViewModels;
 using FreelanceManager.Core.Services;
 using FreelanceManager.Data;
@@ -21,6 +22,7 @@ public static class ServiceConfiguration
         services.AddSingleton<IInvoiceNumberGenerator, InvoiceNumberGenerator>();
         services.AddSingleton<IBackupService, BackupService>();
         services.AddSingleton<IPdfExporter, QuestPdfInvoiceExporter>();
+        services.AddSingleton<IThemeService, ThemeService>();
 
         services.AddTransient<IClientRepository, ClientRepository>();
         services.AddTransient<IProjectRepository, ProjectRepository>();
