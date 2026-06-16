@@ -6,3 +6,5 @@ obj/
 *.db-shm
 *.db-wal
 [Bb]ackup/
+
+.superpowers/
