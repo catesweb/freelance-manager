@@ -15,6 +15,8 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
+
         Services = ServiceConfiguration.Build();
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)

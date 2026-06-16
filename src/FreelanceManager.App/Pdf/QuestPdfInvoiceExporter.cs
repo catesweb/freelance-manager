@@ -10,8 +10,6 @@ public class QuestPdfInvoiceExporter : IPdfExporter
 {
     public void ExportInvoice(Invoice invoice, BusinessProfile profile, string outputPath)
     {
-        QuestPDF.Settings.License = LicenseType.Community;
-
         decimal subtotal = InvoiceCalculator.Subtotal(invoice);
         decimal tax = InvoiceCalculator.Tax(invoice);
         decimal total = InvoiceCalculator.Total(invoice);
