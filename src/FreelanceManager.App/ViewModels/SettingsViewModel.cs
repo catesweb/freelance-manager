@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FreelanceManager.App.Services;
 using FreelanceManager.Core.Models;
 using FreelanceManager.Core.Services;
 using FreelanceManager.Data.Repositories;
@@ -10,6 +11,7 @@ public partial class SettingsViewModel : ViewModelBase
 {
     private readonly IBusinessProfileRepository _profiles;
     private readonly IBackupService _backup;
+    private readonly IThemeService _themeService;
     private BusinessProfile _model = new();
 
     [ObservableProperty] private string _name = string.Empty;
@@ -21,11 +23,15 @@ public partial class SettingsViewModel : ViewModelBase
     [ObservableProperty] private decimal _defaultTaxRate;
     [ObservableProperty] private string _invoiceNumberFormat = "INV-{YYYY}-{0000}";
     [ObservableProperty] private string? _statusMessage;
+    [ObservableProperty] private ThemeMode _theme;
 
-    public SettingsViewModel(IBusinessProfileRepository profiles, IBackupService backup)
+    public static ThemeMode[] ThemeOptions { get; } = System.Enum.GetValues<ThemeMode>();
+
+    public SettingsViewModel(IBusinessProfileRepository profiles, IBackupService backup, IThemeService themeService)
     {
         _profiles = profiles;
         _backup = backup;
+        _themeService = themeService;
         _ = LoadAsync();
     }
 
@@ -42,6 +48,7 @@ public partial class SettingsViewModel : ViewModelBase
             DefaultCurrency = _model.DefaultCurrency;
             DefaultTaxRate = _model.DefaultTaxRate;
             InvoiceNumberFormat = _model.InvoiceNumberFormat;
+            Theme = _model.Theme;
         }
         catch (System.Exception ex)
         {
@@ -60,7 +67,9 @@ public partial class SettingsViewModel : ViewModelBase
         _model.DefaultCurrency = DefaultCurrency;
         _model.DefaultTaxRate = DefaultTaxRate;
         _model.InvoiceNumberFormat = InvoiceNumberFormat;
+        _model.Theme = Theme;
         await _profiles.SaveAsync(_model);
+        _themeService.Apply(Theme);
         StatusMessage = "Settings saved.";
     }
 

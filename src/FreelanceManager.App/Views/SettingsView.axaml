@@ -16,6 +16,11 @@
       <TextBox Watermark="Default currency (e.g. USD)" Text="{Binding DefaultCurrency}"/>
       <TextBox Watermark="Default tax rate (e.g. 0.2)" Text="{Binding DefaultTaxRate}"/>
       <TextBox Watermark="Invoice number format" Text="{Binding InvoiceNumberFormat}"/>
+      <TextBlock Text="Appearance" FontWeight="Bold" Margin="0,8,0,0"/>
+      <TextBlock Text="Theme"/>
+      <ComboBox HorizontalAlignment="Stretch"
+                ItemsSource="{Binding ThemeOptions}"
+                SelectedItem="{Binding Theme}"/>
       <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,8,0,0">
         <Button Content="Save" Command="{Binding SaveCommand}"/>
         <Button Content="Backup now" Command="{Binding BackupNowCommand}"/>
