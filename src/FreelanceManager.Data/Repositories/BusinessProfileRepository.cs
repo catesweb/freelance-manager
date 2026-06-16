@@ -5,24 +5,26 @@ namespace FreelanceManager.Data.Repositories;
 
 public class BusinessProfileRepository : IBusinessProfileRepository
 {
-    private readonly AppDbContext _db;
-    public BusinessProfileRepository(AppDbContext db) => _db = db;
+    private readonly IDbContextFactory<AppDbContext> _factory;
+    public BusinessProfileRepository(IDbContextFactory<AppDbContext> factory) => _factory = factory;
 
     public async Task<BusinessProfile> GetAsync()
     {
-        var profile = await _db.BusinessProfiles.FirstOrDefaultAsync();
+        using var db = _factory.CreateDbContext();
+        var profile = await db.BusinessProfiles.FirstOrDefaultAsync();
         if (profile is null)
         {
             profile = new BusinessProfile { Id = 1 };
-            _db.BusinessProfiles.Add(profile);
-            await _db.SaveChangesAsync();
+            db.BusinessProfiles.Add(profile);
+            await db.SaveChangesAsync();
         }
         return profile;
     }
 
     public async Task SaveAsync(BusinessProfile profile)
     {
-        _db.BusinessProfiles.Update(profile);
-        await _db.SaveChangesAsync();
+        using var db = _factory.CreateDbContext();
+        db.BusinessProfiles.Update(profile);
+        await db.SaveChangesAsync();
     }
 }

@@ -14,9 +14,8 @@ public static class ServiceConfiguration
     {
         var services = new ServiceCollection();
 
-        services.AddDbContext<AppDbContext>(o =>
-            o.UseSqlite($"Data Source={AppPaths.DatabasePath}"),
-            ServiceLifetime.Transient);
+        services.AddDbContextFactory<AppDbContext>(o =>
+            o.UseSqlite($"Data Source={AppPaths.DatabasePath}"));
 
         services.AddSingleton<IClock, SystemClock>();
         services.AddSingleton<IInvoiceNumberGenerator, InvoiceNumberGenerator>();
@@ -38,9 +37,9 @@ public static class ServiceConfiguration
         var provider = services.BuildServiceProvider();
 
         // apply migrations on startup
-        using (var scope = provider.CreateScope())
+        var factory = provider.GetRequiredService<IDbContextFactory<AppDbContext>>();
+        using (var db = factory.CreateDbContext())
         {
-            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             db.Database.Migrate();
         }
 

@@ -32,5 +32,14 @@ public sealed class TestDb : IDisposable
 
     public AppDbContext NewContext() => new(Options);
 
+    public IDbContextFactory<AppDbContext> CreateFactory() => new TestDbContextFactory(Options);
+
+    private sealed class TestDbContextFactory : IDbContextFactory<AppDbContext>
+    {
+        private readonly DbContextOptions<AppDbContext> _options;
+        public TestDbContextFactory(DbContextOptions<AppDbContext> options) => _options = options;
+        public AppDbContext CreateDbContext() => new(_options);
+    }
+
     public void Dispose() => _connection.Dispose();
 }
