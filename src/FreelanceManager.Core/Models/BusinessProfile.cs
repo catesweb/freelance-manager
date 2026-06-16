@@ -12,4 +12,5 @@ public class BusinessProfile
     public string DefaultCurrency { get; set; } = "USD";
     public decimal DefaultTaxRate { get; set; }
     public string InvoiceNumberFormat { get; set; } = "INV-{YYYY}-{0000}";
+    public ThemeMode Theme { get; set; } = ThemeMode.System;
 }

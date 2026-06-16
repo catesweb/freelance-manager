@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using FreelanceManager.Core.Models;
 using FreelanceManager.Data.Repositories;
 using Xunit;
 
@@ -28,5 +29,19 @@ public class BusinessProfileRepositoryTests
         var reloaded = await new BusinessProfileRepository(db.CreateFactory()).GetAsync();
         Assert.Equal("Christian Design Co", reloaded.Name);
         Assert.Equal(0.2m, reloaded.DefaultTaxRate);
+    }
+
+    [Fact]
+    public async Task SaveAsync_persists_theme_preference()
+    {
+        using var db = new TestDb();
+        var repo = new BusinessProfileRepository(db.CreateFactory());
+        var profile = await repo.GetAsync();
+        profile.Theme = ThemeMode.Dark;
+
+        await new BusinessProfileRepository(db.CreateFactory()).SaveAsync(profile);
+        var reloaded = await new BusinessProfileRepository(db.CreateFactory()).GetAsync();
+
+        Assert.Equal(ThemeMode.Dark, reloaded.Theme);
     }
 }
