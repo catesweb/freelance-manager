@@ -1,0 +1,53 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <!-- Primary button -->
+  <Style Selector="Button.primary">
+    <Setter Property="Background" Value="{DynamicResource AccentPrimary}"/>
+    <Setter Property="Foreground" Value="#FFFFFF"/>
+    <Setter Property="Padding" Value="14,7"/>
+    <Setter Property="CornerRadius" Value="{DynamicResource RadiusSm}"/>
+    <Setter Property="FontWeight" Value="SemiBold"/>
+  </Style>
+  <Style Selector="Button.primary:pointerover /template/ ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource AccentPrimaryHover}"/>
+  </Style>
+
+  <!-- Secondary button -->
+  <Style Selector="Button.secondary">
+    <Setter Property="Background" Value="{DynamicResource BgSurfaceAlt}"/>
+    <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+    <Setter Property="Padding" Value="14,7"/>
+    <Setter Property="CornerRadius" Value="{DynamicResource RadiusSm}"/>
+  </Style>
+
+  <!-- Ghost button -->
+  <Style Selector="Button.ghost">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+    <Setter Property="Padding" Value="10,6"/>
+    <Setter Property="CornerRadius" Value="{DynamicResource RadiusSm}"/>
+  </Style>
+
+  <!-- Danger button -->
+  <Style Selector="Button.danger">
+    <Setter Property="Background" Value="{DynamicResource DangerSubtle}"/>
+    <Setter Property="Foreground" Value="{DynamicResource Danger}"/>
+    <Setter Property="Padding" Value="14,7"/>
+    <Setter Property="CornerRadius" Value="{DynamicResource RadiusSm}"/>
+  </Style>
+
+  <!-- Card / surface container -->
+  <Style Selector="Border.card">
+    <Setter Property="Background" Value="{DynamicResource BgSurface}"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource Border}"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="CornerRadius" Value="{DynamicResource RadiusMd}"/>
+    <Setter Property="Padding" Value="16"/>
+  </Style>
+
+  <!-- Text inputs -->
+  <Style Selector="TextBox">
+    <Setter Property="CornerRadius" Value="{DynamicResource RadiusSm}"/>
+  </Style>
+</Styles>
