@@ -23,7 +23,7 @@ invoices in one place.
 - **Windows first, macOS later with no rewrite.**
 - **Single user, no authentication.** Personal app on the user's own machine.
 
-**Chosen stack:** .NET 8 + **Avalonia UI** (native cross-platform rendering engine),
+**Chosen stack:** .NET 10 (current LTS, GA Nov 2025) + **Avalonia UI** (native cross-platform rendering engine),
 **SQLite** via **EF Core**, **MVVM** via CommunityToolkit.Mvvm, **QuestPDF** for document
 generation, Microsoft.Extensions.DependencyInjection for wiring.
 
