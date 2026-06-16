@@ -23,6 +23,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\FreelanceManager.Core\FreelanceManager.Core.csproj" />
     <ProjectReference Include="..\..\src\FreelanceManager.Data\FreelanceManager.Data.csproj" />
+    <ProjectReference Include="..\..\src\FreelanceManager.App\FreelanceManager.App.csproj" />
   </ItemGroup>
 
 </Project>
