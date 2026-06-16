@@ -25,8 +25,15 @@ public partial class ClientsViewModel : ViewModelBase
 
     private async Task LoadAsync()
     {
-        Clients.Clear();
-        foreach (var c in await _repo.GetAllAsync()) Clients.Add(c);
+        try
+        {
+            Clients.Clear();
+            foreach (var c in await _repo.GetAllAsync()) Clients.Add(c);
+        }
+        catch (System.Exception ex)
+        {
+            StatusMessage = $"Load failed: {ex.Message}";
+        }
     }
 
     [RelayCommand] private void New() => Editor = new ClientEditViewModel(new Client());

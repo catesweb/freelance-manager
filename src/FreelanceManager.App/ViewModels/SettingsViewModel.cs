@@ -31,15 +31,22 @@ public partial class SettingsViewModel : ViewModelBase
 
     private async Task LoadAsync()
     {
-        _model = await _profiles.GetAsync();
-        Name = _model.Name;
-        Address = _model.Address;
-        Email = _model.Email;
-        Phone = _model.Phone;
-        LogoPath = _model.LogoPath;
-        DefaultCurrency = _model.DefaultCurrency;
-        DefaultTaxRate = _model.DefaultTaxRate;
-        InvoiceNumberFormat = _model.InvoiceNumberFormat;
+        try
+        {
+            _model = await _profiles.GetAsync();
+            Name = _model.Name;
+            Address = _model.Address;
+            Email = _model.Email;
+            Phone = _model.Phone;
+            LogoPath = _model.LogoPath;
+            DefaultCurrency = _model.DefaultCurrency;
+            DefaultTaxRate = _model.DefaultTaxRate;
+            InvoiceNumberFormat = _model.InvoiceNumberFormat;
+        }
+        catch (System.Exception ex)
+        {
+            StatusMessage = $"Load failed: {ex.Message}";
+        }
     }
 
     [RelayCommand]

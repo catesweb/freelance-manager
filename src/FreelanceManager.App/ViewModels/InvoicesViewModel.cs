@@ -41,14 +41,21 @@ public partial class InvoicesViewModel : ViewModelBase
 
     private async Task LoadAsync()
     {
-        Invoices.Clear();
-        foreach (var i in await _invoices.GetAllAsync())
-            Invoices.Add(new InvoiceRow(i, OverduePolicy.EffectiveStatus(i, _clock.Today)));
+        try
+        {
+            Invoices.Clear();
+            foreach (var i in await _invoices.GetAllAsync())
+                Invoices.Add(new InvoiceRow(i, OverduePolicy.EffectiveStatus(i, _clock.Today)));
 
-        ClientOptions.Clear();
-        foreach (var c in await _clients.GetAllAsync()) ClientOptions.Add(c);
-        ProjectOptions.Clear();
-        foreach (var p in await _projects.GetAllAsync()) ProjectOptions.Add(p);
+            ClientOptions.Clear();
+            foreach (var c in await _clients.GetAllAsync()) ClientOptions.Add(c);
+            ProjectOptions.Clear();
+            foreach (var p in await _projects.GetAllAsync()) ProjectOptions.Add(p);
+        }
+        catch (System.Exception ex)
+        {
+            StatusMessage = $"Load failed: {ex.Message}";
+        }
     }
 
     [RelayCommand]

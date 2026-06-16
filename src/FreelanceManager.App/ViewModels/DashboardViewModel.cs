@@ -14,6 +14,7 @@ public partial class DashboardViewModel : ViewModelBase
     [ObservableProperty] private int _activeProjects;
     [ObservableProperty] private int _overdueCount;
     [ObservableProperty] private decimal _outstandingTotal;
+    [ObservableProperty] private string? _statusMessage;
 
     public DashboardViewModel(IProjectRepository projects, IInvoiceRepository invoices, IClock clock)
     {
@@ -25,20 +26,27 @@ public partial class DashboardViewModel : ViewModelBase
 
     private async Task LoadAsync()
     {
-        var projects = await _projects.GetAllAsync();
-        ActiveProjects = projects.Count(p => p.Status == ProjectStatus.Active);
-
-        var invoices = await _invoices.GetAllAsync();
-        decimal outstanding = 0m;
-        int overdue = 0;
-        foreach (var i in invoices)
+        try
         {
-            var eff = OverduePolicy.EffectiveStatus(i, _clock.Today);
-            if (eff == InvoiceStatus.Overdue) overdue++;
-            if (eff is InvoiceStatus.Sent or InvoiceStatus.Overdue)
-                outstanding += InvoiceCalculator.Total(i);
+            var projects = await _projects.GetAllAsync();
+            ActiveProjects = projects.Count(p => p.Status == ProjectStatus.Active);
+
+            var invoices = await _invoices.GetAllAsync();
+            decimal outstanding = 0m;
+            int overdue = 0;
+            foreach (var i in invoices)
+            {
+                var eff = OverduePolicy.EffectiveStatus(i, _clock.Today);
+                if (eff == InvoiceStatus.Overdue) overdue++;
+                if (eff is InvoiceStatus.Sent or InvoiceStatus.Overdue)
+                    outstanding += InvoiceCalculator.Total(i);
+            }
+            OverdueCount = overdue;
+            OutstandingTotal = outstanding;
         }
-        OverdueCount = overdue;
-        OutstandingTotal = outstanding;
+        catch (System.Exception ex)
+        {
+            StatusMessage = $"Load failed: {ex.Message}";
+        }
     }
 }

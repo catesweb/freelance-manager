@@ -28,10 +28,17 @@ public partial class ProjectsViewModel : ViewModelBase
 
     private async Task LoadAsync()
     {
-        Projects.Clear();
-        foreach (var p in await _projects.GetAllAsync()) Projects.Add(p);
-        ClientOptions.Clear();
-        foreach (var c in await _clients.GetAllAsync()) ClientOptions.Add(c);
+        try
+        {
+            Projects.Clear();
+            foreach (var p in await _projects.GetAllAsync()) Projects.Add(p);
+            ClientOptions.Clear();
+            foreach (var c in await _clients.GetAllAsync()) ClientOptions.Add(c);
+        }
+        catch (System.Exception ex)
+        {
+            StatusMessage = $"Load failed: {ex.Message}";
+        }
     }
 
     [RelayCommand] private void New()
