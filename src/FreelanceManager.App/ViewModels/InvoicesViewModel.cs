@@ -65,13 +65,12 @@ public partial class InvoicesViewModel : ViewModelBase
             foreach (var c in await _clients.GetAllAsync()) ClientOptions.Add(c);
             ProjectOptions.Clear();
             foreach (var p in await _projects.GetAllAsync()) ProjectOptions.Add(p);
-
-            OnPropertyChanged(nameof(IsEmpty));
         }
         catch (System.Exception ex)
         {
             _notes.Show($"Load failed: {ex.Message}", NotificationKind.Error);
         }
+        OnPropertyChanged(nameof(IsEmpty));
     }
 
     [RelayCommand]

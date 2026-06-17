@@ -64,8 +64,16 @@ public partial class ClientsViewModel : ViewModelBase
         if (await _dialogs.ShowDialogAsync(editor))
         {
             var model = await _repo.GetAsync(editor.Id);
-            if (model is not null) { editor.ApplyTo(model); await _repo.UpdateAsync(model); }
-            _notes.Show("Client saved.", NotificationKind.Success);
+            if (model is not null)
+            {
+                editor.ApplyTo(model);
+                await _repo.UpdateAsync(model);
+                _notes.Show("Client saved.", NotificationKind.Success);
+            }
+            else
+            {
+                _notes.Show("Client no longer exists.", NotificationKind.Error);
+            }
             await LoadAsync();
         }
     }

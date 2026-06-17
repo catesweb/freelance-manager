@@ -1,3 +1,4 @@
+using System;
 using Avalonia;
 using Avalonia.Controls;
 
@@ -15,4 +16,27 @@ public partial class StatusBadge : UserControl
     }
 
     public StatusBadge() => InitializeComponent();
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        if (Application.Current is { } app)
+            app.ActualThemeVariantChanged += OnThemeVariantChanged;
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        if (Application.Current is { } app)
+            app.ActualThemeVariantChanged -= OnThemeVariantChanged;
+    }
+
+    // The status->brush converter only re-runs when Status changes, so re-poke it
+    // when the theme variant flips at runtime to keep the badge colors correct.
+    private void OnThemeVariantChanged(object? sender, EventArgs e)
+    {
+        var current = Status;
+        Status = null;
+        Status = current;
+    }
 }

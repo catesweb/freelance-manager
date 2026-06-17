@@ -48,12 +48,12 @@ public partial class ProjectsViewModel : ViewModelBase
             foreach (var p in await _projects.GetAllAsync()) Projects.Add(p);
             ClientOptions.Clear();
             foreach (var c in await _clients.GetAllAsync()) ClientOptions.Add(c);
-            OnPropertyChanged(nameof(IsEmpty));
         }
         catch (System.Exception ex)
         {
             _notes.Show($"Load failed: {ex.Message}", NotificationKind.Error);
         }
+        OnPropertyChanged(nameof(IsEmpty));
     }
 
     [RelayCommand] private void New()
