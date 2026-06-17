@@ -1,7 +1,5 @@
 # Freelance Manager — Foundation + Thin Slices Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
-
 **Goal:** Build the native desktop foundation (app shell, clients, local SQLite database) plus working-but-minimal slices of invoicing and project tracking, with invoice PDF export.
 
 **Architecture:** Layered .NET solution — `Core` (domain models + logic + service interfaces, no UI/DB), `Data` (EF Core + SQLite), `App` (Avalonia MVVM UI), `Tests` (xUnit). Business logic lives in Core/Data and is unit-tested without launching the GUI. DI wires services and the DbContext into ViewModels.
@@ -12,7 +10,7 @@
 
 ## Spec Reference
 
-Implements `docs/superpowers/specs/2026-06-16-freelance-manager-foundation-design.md`.
+Implements `docs/specs/2026-06-16-freelance-manager-foundation-design.md`.
 
 ## Conventions for the executor
 

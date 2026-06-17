@@ -1,14 +1,12 @@
 # Design System & Shell Foundation Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
-
 **Goal:** Replace Freelance Manager's default-themed, hardcoded-hex UI with a token-based design system (light + dark), reusable component styles, a redesigned app shell, and a hybrid editor framework — then retrofit all five existing views onto it.
 
 **Architecture:** All work lands in `FreelanceManager.App` plus the test project, with one new persisted setting in Core/Data. Colors/spacing/typography become named resources in `ThemeDictionaries` referenced via `DynamicResource`, so Avalonia swaps light/dark live. `ThemeVariant.Default` follows the OS automatically — "System" mode needs no manual OS listener. Editing moves from a docked side panel to a hybrid: full-page editors for Projects/Invoices, modal dialogs (via an injected `IDialogService`) for Clients and confirmations, with an `INotificationService` replacing bottom red-text status lines.
 
 **Tech Stack:** .NET 10, Avalonia UI 12.0.4 (Fluent base + Inter font), CommunityToolkit.Mvvm, EF Core + SQLite, Microsoft.Extensions.DependencyInjection, xUnit tests.
 
-**Spec:** [docs/superpowers/specs/2026-06-16-design-system-shell-foundation-design.md](../specs/2026-06-16-design-system-shell-foundation-design.md)
+**Spec:** [docs/specs/2026-06-16-design-system-shell-foundation-design.md](../specs/2026-06-16-design-system-shell-foundation-design.md)
 
 ---
 

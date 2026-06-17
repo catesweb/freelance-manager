@@ -56,7 +56,7 @@ FreelanceManager.slnx
 │  └─ FreelanceManager.App/    # Avalonia UI: Views (.axaml) + ViewModels (MVVM), DI, PDF export
 └─ tests/
    └─ FreelanceManager.Tests/  # xUnit: Core logic, repositories (real SQLite), ViewModels
-docs/superpowers/              # specs/ (design) and plans/ (implementation plan)
+docs/                          # specs/ (design) and plans/ (implementation plan)
 ```
 
 ## Getting started
@@ -91,8 +91,8 @@ The database and backups are created under `%AppData%\FreelanceManager\`
 
 ## Documentation
 
-- Design spec: [`docs/superpowers/specs/2026-06-16-freelance-manager-foundation-design.md`](docs/superpowers/specs/2026-06-16-freelance-manager-foundation-design.md)
-- Implementation plan: [`docs/superpowers/plans/2026-06-16-freelance-manager-foundation.md`](docs/superpowers/plans/2026-06-16-freelance-manager-foundation.md)
+- Design spec: [`docs/specs/2026-06-16-freelance-manager-foundation-design.md`](docs/specs/2026-06-16-freelance-manager-foundation-design.md)
+- Implementation plan: [`docs/plans/2026-06-16-freelance-manager-foundation.md`](docs/plans/2026-06-16-freelance-manager-foundation.md)
 
 ## Roadmap
 
