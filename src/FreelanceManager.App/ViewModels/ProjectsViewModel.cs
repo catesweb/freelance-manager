@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FreelanceManager.Core.Models;
 using FreelanceManager.Data.Repositories;
+using FreelanceManager.App.Services;
 
 namespace FreelanceManager.App.ViewModels;
 
@@ -10,6 +11,8 @@ public partial class ProjectsViewModel : ViewModelBase
 {
     private readonly IProjectRepository _projects;
     private readonly IClientRepository _clients;
+    private readonly IDialogService _dialogs;
+    private readonly INotificationService _notes;
 
     public ObservableCollection<Project> Projects { get; } = new();
     public ObservableCollection<Client> ClientOptions { get; } = new();
@@ -17,12 +20,23 @@ public partial class ProjectsViewModel : ViewModelBase
     [ObservableProperty] private Project? _selected;
     [ObservableProperty] private ProjectEditViewModel? _editor;
     [ObservableProperty] private Client? _editorClient;
-    [ObservableProperty] private string? _statusMessage;
 
-    public ProjectsViewModel(IProjectRepository projects, IClientRepository clients)
+    public bool IsEditing => Editor is not null;
+    public bool IsNotEditing => Editor is null;
+    public bool IsEmpty => Projects.Count == 0;
+
+    partial void OnEditorChanged(ProjectEditViewModel? value)
+    {
+        OnPropertyChanged(nameof(IsEditing));
+        OnPropertyChanged(nameof(IsNotEditing));
+    }
+
+    public ProjectsViewModel(IProjectRepository projects, IClientRepository clients, IDialogService dialogs, INotificationService notes)
     {
         _projects = projects;
         _clients = clients;
+        _dialogs = dialogs;
+        _notes = notes;
         _ = LoadAsync();
     }
 
@@ -34,10 +48,11 @@ public partial class ProjectsViewModel : ViewModelBase
             foreach (var p in await _projects.GetAllAsync()) Projects.Add(p);
             ClientOptions.Clear();
             foreach (var c in await _clients.GetAllAsync()) ClientOptions.Add(c);
+            OnPropertyChanged(nameof(IsEmpty));
         }
         catch (System.Exception ex)
         {
-            StatusMessage = $"Load failed: {ex.Message}";
+            _notes.Show($"Load failed: {ex.Message}", NotificationKind.Error);
         }
     }
 
@@ -60,7 +75,7 @@ public partial class ProjectsViewModel : ViewModelBase
     {
         if (Editor is null) return;
         if (EditorClient is not null) Editor.ClientId = EditorClient.Id;
-        if (!Editor.IsValid) { StatusMessage = "Title and client are required."; return; }
+        if (!Editor.IsValid) { _notes.Show("Title and client are required.", NotificationKind.Error); return; }
 
         try
         {
@@ -77,12 +92,12 @@ public partial class ProjectsViewModel : ViewModelBase
             }
 
             Editor = null;
-            StatusMessage = "Saved.";
+            _notes.Show("Project saved.", NotificationKind.Success);
             await LoadAsync();
         }
         catch (System.Exception ex)
         {
-            StatusMessage = $"Save failed: {ex.Message}";
+            _notes.Show($"Save failed: {ex.Message}", NotificationKind.Error);
         }
     }
 
@@ -92,15 +107,18 @@ public partial class ProjectsViewModel : ViewModelBase
     private async Task Delete()
     {
         if (Selected is null) return;
+        if (!await _dialogs.ConfirmAsync("Delete project",
+                $"Delete \"{Selected.Title}\"? This cannot be undone.", "Delete"))
+            return;
         try
         {
             await _projects.DeleteAsync(Selected.Id);
             await LoadAsync();
-            StatusMessage = "Deleted.";
+            _notes.Show("Project deleted.", NotificationKind.Success);
         }
         catch (System.Exception ex)
         {
-            StatusMessage = $"Delete failed: {ex.Message}";
+            _notes.Show($"Delete failed: {ex.Message}", NotificationKind.Error);
         }
     }
 }
