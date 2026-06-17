@@ -1,5 +1,7 @@
 bin/
 obj/
+publish/
+tools/
 *.user
 .vs/
 *.db

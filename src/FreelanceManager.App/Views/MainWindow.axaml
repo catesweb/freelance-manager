@@ -4,6 +4,7 @@
         x:Class="FreelanceManager.App.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Width="1100" Height="720"
+        Icon="/Assets/app-icon.ico"
         Title="Freelance Manager">
   <Grid ColumnDefinitions="220,*" Background="{DynamicResource BgCanvas}">
     <Border Grid.Column="0" Background="{DynamicResource BgSurface}"
