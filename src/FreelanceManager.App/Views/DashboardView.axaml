@@ -1,27 +1,31 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:FreelanceManager.App.ViewModels"
+             xmlns:c="using:FreelanceManager.App.Controls"
              x:Class="FreelanceManager.App.Views.DashboardView"
              x:DataType="vm:DashboardViewModel">
-  <StackPanel Spacing="12">
-    <TextBlock Text="Dashboard" FontSize="22" FontWeight="Bold"/>
+  <StackPanel Spacing="16">
+    <c:PageHeader Title="Dashboard"/>
     <WrapPanel>
-      <Border Margin="0,0,12,0" Padding="20" Background="#eef" CornerRadius="6">
-        <StackPanel>
-          <TextBlock Text="Active projects"/>
-          <TextBlock Text="{Binding ActiveProjects}" FontSize="28" FontWeight="Bold"/>
+      <Border Classes="card" Margin="0,0,12,12" MinWidth="180">
+        <StackPanel Spacing="4">
+          <TextBlock Classes="Caption" Text="Active projects"/>
+          <TextBlock Text="{Binding ActiveProjects}" FontSize="28" FontWeight="Bold"
+                     Foreground="{DynamicResource AccentPrimary}"/>
         </StackPanel>
       </Border>
-      <Border Margin="0,0,12,0" Padding="20" Background="#efe" CornerRadius="6">
-        <StackPanel>
-          <TextBlock Text="Outstanding"/>
-          <TextBlock Text="{Binding OutstandingTotal, StringFormat={}{0:0.00}}" FontSize="28" FontWeight="Bold"/>
+      <Border Classes="card" Margin="0,0,12,12" MinWidth="180">
+        <StackPanel Spacing="4">
+          <TextBlock Classes="Caption" Text="Outstanding"/>
+          <TextBlock Text="{Binding OutstandingTotal, StringFormat={}{0:0.00}}" FontSize="28" FontWeight="Bold"
+                     Foreground="{DynamicResource TextPrimary}"/>
         </StackPanel>
       </Border>
-      <Border Padding="20" Background="#fee" CornerRadius="6">
-        <StackPanel>
-          <TextBlock Text="Overdue"/>
-          <TextBlock Text="{Binding OverdueCount}" FontSize="28" FontWeight="Bold"/>
+      <Border Classes="card" Margin="0,0,12,12" MinWidth="180">
+        <StackPanel Spacing="4">
+          <TextBlock Classes="Caption" Text="Overdue"/>
+          <TextBlock Text="{Binding OverdueCount}" FontSize="28" FontWeight="Bold"
+                     Foreground="{DynamicResource Danger}"/>
         </StackPanel>
       </Border>
     </WrapPanel>
