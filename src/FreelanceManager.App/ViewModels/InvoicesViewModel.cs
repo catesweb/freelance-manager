@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FreelanceManager.App.Services;
 using FreelanceManager.Core.Models;
 using FreelanceManager.Core.Services;
 using FreelanceManager.Data.Repositories;
@@ -16,6 +17,8 @@ public partial class InvoicesViewModel : ViewModelBase
     private readonly IBusinessProfileRepository _profiles;
     private readonly IPdfExporter _pdf;
     private readonly IClock _clock;
+    private readonly IDialogService _dialogs;
+    private readonly INotificationService _notes;
 
     /// <summary>Supplied by the View: returns a chosen output path or null if cancelled.</summary>
     public Func<string, Task<string?>>? SavePdfPathProvider { get; set; }
@@ -27,15 +30,26 @@ public partial class InvoicesViewModel : ViewModelBase
     [ObservableProperty] private InvoiceRow? _selected;
     [ObservableProperty] private InvoiceEditViewModel? _editor;
     [ObservableProperty] private Client? _editorClient;
-    [ObservableProperty] private string? _statusMessage;
+
+    public bool IsEditing => Editor is not null;
+    public bool IsNotEditing => Editor is null;
+    public bool IsEmpty => Invoices.Count == 0;
+
+    partial void OnEditorChanged(InvoiceEditViewModel? value)
+    {
+        OnPropertyChanged(nameof(IsEditing));
+        OnPropertyChanged(nameof(IsNotEditing));
+    }
 
     public InvoicesViewModel(
         IInvoiceRepository invoices, IClientRepository clients, IProjectRepository projects,
         IInvoiceNumberGenerator numbers, IBusinessProfileRepository profiles,
-        IPdfExporter pdf, IClock clock)
+        IPdfExporter pdf, IClock clock,
+        IDialogService dialogs, INotificationService notes)
     {
         _invoices = invoices; _clients = clients; _projects = projects;
         _numbers = numbers; _profiles = profiles; _pdf = pdf; _clock = clock;
+        _dialogs = dialogs; _notes = notes;
         _ = LoadAsync();
     }
 
@@ -51,10 +65,12 @@ public partial class InvoicesViewModel : ViewModelBase
             foreach (var c in await _clients.GetAllAsync()) ClientOptions.Add(c);
             ProjectOptions.Clear();
             foreach (var p in await _projects.GetAllAsync()) ProjectOptions.Add(p);
+
+            OnPropertyChanged(nameof(IsEmpty));
         }
         catch (System.Exception ex)
         {
-            StatusMessage = $"Load failed: {ex.Message}";
+            _notes.Show($"Load failed: {ex.Message}", NotificationKind.Error);
         }
     }
 
@@ -92,7 +108,11 @@ public partial class InvoicesViewModel : ViewModelBase
     {
         if (Editor is null) return;
         if (EditorClient is not null) Editor.ClientId = EditorClient.Id;
-        if (!Editor.IsValid) { StatusMessage = "Client and invoice number are required."; return; }
+        if (!Editor.IsValid)
+        {
+            _notes.Show("Client and invoice number are required.", NotificationKind.Error);
+            return;
+        }
 
         try
         {
@@ -101,12 +121,12 @@ public partial class InvoicesViewModel : ViewModelBase
             else await _invoices.UpdateAsync(model);
 
             Editor = null;
-            StatusMessage = "Saved.";
+            _notes.Show("Invoice saved.", NotificationKind.Success);
             await LoadAsync();
         }
         catch (System.Exception ex)
         {
-            StatusMessage = $"Save failed: {ex.Message}";
+            _notes.Show($"Save failed: {ex.Message}", NotificationKind.Error);
         }
     }
 
@@ -116,15 +136,18 @@ public partial class InvoicesViewModel : ViewModelBase
     private async Task Delete()
     {
         if (Selected is null) return;
+        if (!await _dialogs.ConfirmAsync("Delete invoice",
+                $"Delete invoice {Selected.Number}? This cannot be undone.", "Delete"))
+            return;
         try
         {
             await _invoices.DeleteAsync(Selected.Id);
             await LoadAsync();
-            StatusMessage = "Deleted.";
+            _notes.Show("Invoice deleted.", NotificationKind.Success);
         }
         catch (System.Exception ex)
         {
-            StatusMessage = $"Delete failed: {ex.Message}";
+            _notes.Show($"Delete failed: {ex.Message}", NotificationKind.Error);
         }
     }
 
@@ -142,11 +165,11 @@ public partial class InvoicesViewModel : ViewModelBase
 
             var profile = await _profiles.GetAsync();
             _pdf.ExportInvoice(invoice, profile, path);
-            StatusMessage = $"Exported to {path}";
+            _notes.Show($"Exported to {path}", NotificationKind.Success);
         }
         catch (System.Exception ex)
         {
-            StatusMessage = $"Export failed: {ex.Message}";
+            _notes.Show($"Export failed: {ex.Message}", NotificationKind.Error);
         }
     }
 }
