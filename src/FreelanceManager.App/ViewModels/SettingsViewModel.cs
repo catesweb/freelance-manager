@@ -12,6 +12,7 @@ public partial class SettingsViewModel : ViewModelBase
     private readonly IBusinessProfileRepository _profiles;
     private readonly IBackupService _backup;
     private readonly IThemeService _themeService;
+    private readonly INotificationService _notes;
     private BusinessProfile _model = new();
 
     [ObservableProperty] private string _name = string.Empty;
@@ -22,16 +23,16 @@ public partial class SettingsViewModel : ViewModelBase
     [ObservableProperty] private string _defaultCurrency = "USD";
     [ObservableProperty] private decimal _defaultTaxRate;
     [ObservableProperty] private string _invoiceNumberFormat = "INV-{YYYY}-{0000}";
-    [ObservableProperty] private string? _statusMessage;
     [ObservableProperty] private ThemeMode _theme;
 
     public static ThemeMode[] ThemeOptions { get; } = System.Enum.GetValues<ThemeMode>();
 
-    public SettingsViewModel(IBusinessProfileRepository profiles, IBackupService backup, IThemeService themeService)
+    public SettingsViewModel(IBusinessProfileRepository profiles, IBackupService backup, IThemeService themeService, INotificationService notes)
     {
         _profiles = profiles;
         _backup = backup;
         _themeService = themeService;
+        _notes = notes;
         _ = LoadAsync();
     }
 
@@ -52,7 +53,7 @@ public partial class SettingsViewModel : ViewModelBase
         }
         catch (System.Exception ex)
         {
-            StatusMessage = $"Load failed: {ex.Message}";
+            _notes.Show($"Load failed: {ex.Message}", NotificationKind.Error);
         }
     }
 
@@ -70,7 +71,7 @@ public partial class SettingsViewModel : ViewModelBase
         _model.Theme = Theme;
         await _profiles.SaveAsync(_model);
         _themeService.Apply(Theme);
-        StatusMessage = "Settings saved.";
+        _notes.Show("Settings saved.", NotificationKind.Success);
     }
 
     [RelayCommand]
@@ -79,11 +80,11 @@ public partial class SettingsViewModel : ViewModelBase
         try
         {
             string dest = await _backup.BackupAsync(AppPaths.DatabasePath, AppPaths.DefaultBackupDir);
-            StatusMessage = $"Backed up to {dest}";
+            _notes.Show($"Backed up to {dest}", NotificationKind.Success);
         }
         catch (System.Exception ex)
         {
-            StatusMessage = $"Backup failed: {ex.Message}";
+            _notes.Show($"Backup failed: {ex.Message}", NotificationKind.Error);
         }
     }
 }

@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using FreelanceManager.App.Services;
 using FreelanceManager.Core.Models;
 using FreelanceManager.Core.Services;
 using FreelanceManager.Data.Repositories;
@@ -10,17 +11,18 @@ public partial class DashboardViewModel : ViewModelBase
     private readonly IProjectRepository _projects;
     private readonly IInvoiceRepository _invoices;
     private readonly IClock _clock;
+    private readonly INotificationService _notes;
 
     [ObservableProperty] private int _activeProjects;
     [ObservableProperty] private int _overdueCount;
     [ObservableProperty] private decimal _outstandingTotal;
-    [ObservableProperty] private string? _statusMessage;
 
-    public DashboardViewModel(IProjectRepository projects, IInvoiceRepository invoices, IClock clock)
+    public DashboardViewModel(IProjectRepository projects, IInvoiceRepository invoices, IClock clock, INotificationService notes)
     {
         _projects = projects;
         _invoices = invoices;
         _clock = clock;
+        _notes = notes;
         _ = LoadAsync();
     }
 
@@ -46,7 +48,7 @@ public partial class DashboardViewModel : ViewModelBase
         }
         catch (System.Exception ex)
         {
-            StatusMessage = $"Load failed: {ex.Message}";
+            _notes.Show($"Load failed: {ex.Message}", NotificationKind.Error);
         }
     }
 }

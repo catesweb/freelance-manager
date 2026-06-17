@@ -28,12 +28,17 @@ public class SettingsViewModelThemeTests
         public void Apply(ThemeMode mode) => Applied = mode;
     }
 
+    private sealed class FakeNotes : INotificationService
+    {
+        public void Show(string message, NotificationKind kind = NotificationKind.Info) { }
+    }
+
     [Fact]
     public async Task Save_persists_and_applies_selected_theme()
     {
         var profiles = new FakeProfiles();
         var theme = new FakeTheme();
-        var vm = new SettingsViewModel(profiles, new FakeBackup(), theme);
+        var vm = new SettingsViewModel(profiles, new FakeBackup(), theme, new FakeNotes());
         await Task.Delay(50); // allow LoadAsync to complete
 
         vm.Theme = ThemeMode.Dark;
