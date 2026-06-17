@@ -1,8 +1,12 @@
 bin/
 obj/
+publish/
+tools/
 *.user
 .vs/
 *.db
 *.db-shm
 *.db-wal
 [Bb]ackup/
+
+.superpowers/

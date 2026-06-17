@@ -122,8 +122,8 @@ InvoiceLineItem
 
 ## 5. Feature Behavior (Thin Slices)
 
-**Clients** — list + add/edit form. Validation: name required, valid email required. Delete
-blocked when projects/invoices exist.
+**Clients** — list + add/edit form. Validation: name required; email optional but must be a
+valid address if provided. Delete blocked when projects/invoices exist.
 
 **Projects** — list filterable by status; add/edit form with all Section 4 fields; status via
 dropdown; project detail shows linked invoices. The "Generate summary" action is present but

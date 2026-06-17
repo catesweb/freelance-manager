@@ -1,0 +1,11 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="FreelanceManager.App.Controls.PageHeader"
+             x:CompileBindings="False"
+             x:Name="Root">
+  <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,16">
+    <TextBlock Grid.Column="0" Classes="PageTitle" VerticalAlignment="Center"
+               Text="{Binding Title, ElementName=Root}"/>
+    <ContentPresenter Grid.Column="1" Content="{Binding Actions, ElementName=Root}"/>
+  </Grid>
+</UserControl>

@@ -1,0 +1,73 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:FreelanceManager.App.ViewModels"
+             xmlns:c="using:FreelanceManager.App.Controls"
+             x:Class="FreelanceManager.App.Views.SettingsView"
+             x:DataType="vm:SettingsViewModel">
+  <ScrollViewer>
+    <StackPanel Spacing="16" MaxWidth="640" HorizontalAlignment="Left">
+      <c:PageHeader Title="Settings">
+        <c:PageHeader.Actions>
+          <StackPanel Orientation="Horizontal" Spacing="8">
+            <Button Classes="secondary" Content="Backup now" Command="{Binding BackupNowCommand}"/>
+            <Button Classes="primary" Content="Save" Command="{Binding SaveCommand}"/>
+          </StackPanel>
+        </c:PageHeader.Actions>
+      </c:PageHeader>
+
+      <Border Classes="card">
+        <StackPanel Spacing="10">
+          <TextBlock Classes="SectionHeading" Text="Business profile"/>
+          <StackPanel Spacing="4">
+            <TextBlock Classes="FieldLabel" Text="Business name"/>
+            <TextBox Text="{Binding Name}"/>
+          </StackPanel>
+          <StackPanel Spacing="4">
+            <TextBlock Classes="FieldLabel" Text="Address"/>
+            <TextBox Text="{Binding Address}" AcceptsReturn="True" Height="60"/>
+          </StackPanel>
+          <StackPanel Spacing="4">
+            <TextBlock Classes="FieldLabel" Text="Email"/>
+            <TextBox Text="{Binding Email}"/>
+          </StackPanel>
+          <StackPanel Spacing="4">
+            <TextBlock Classes="FieldLabel" Text="Phone"/>
+            <TextBox Text="{Binding Phone}"/>
+          </StackPanel>
+          <StackPanel Spacing="4">
+            <TextBlock Classes="FieldLabel" Text="Logo path"/>
+            <TextBox Text="{Binding LogoPath}"/>
+          </StackPanel>
+        </StackPanel>
+      </Border>
+
+      <Border Classes="card">
+        <StackPanel Spacing="10">
+          <TextBlock Classes="SectionHeading" Text="Invoicing defaults"/>
+          <StackPanel Spacing="4">
+            <TextBlock Classes="FieldLabel" Text="Default currency"/>
+            <TextBox Text="{Binding DefaultCurrency}"/>
+          </StackPanel>
+          <StackPanel Spacing="4">
+            <TextBlock Classes="FieldLabel" Text="Default tax rate (e.g. 0.2)"/>
+            <TextBox Text="{Binding DefaultTaxRate}"/>
+          </StackPanel>
+          <StackPanel Spacing="4">
+            <TextBlock Classes="FieldLabel" Text="Invoice number format"/>
+            <TextBox Text="{Binding InvoiceNumberFormat}"/>
+          </StackPanel>
+        </StackPanel>
+      </Border>
+
+      <Border Classes="card">
+        <StackPanel Spacing="10">
+          <TextBlock Classes="SectionHeading" Text="Appearance"/>
+          <StackPanel Spacing="4">
+            <TextBlock Classes="FieldLabel" Text="Theme"/>
+            <ComboBox HorizontalAlignment="Stretch" ItemsSource="{Binding ThemeOptions}" SelectedItem="{Binding Theme}"/>
+          </StackPanel>
+        </StackPanel>
+      </Border>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

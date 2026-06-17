@@ -1,0 +1,75 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:FreelanceManager.App.ViewModels"
+             xmlns:c="using:FreelanceManager.App.Controls"
+             x:Class="FreelanceManager.App.Views.ProjectEditView"
+             x:DataType="vm:ProjectsViewModel">
+  <ScrollViewer>
+    <StackPanel Spacing="16" MaxWidth="760" HorizontalAlignment="Left">
+      <c:PageHeader Title="Edit project">
+        <c:PageHeader.Actions>
+          <StackPanel Orientation="Horizontal" Spacing="8">
+            <Button Classes="primary" Content="Save project" Command="{Binding SaveCommand}"/>
+            <Button Classes="secondary" Content="Cancel" Command="{Binding CancelCommand}"/>
+          </StackPanel>
+        </c:PageHeader.Actions>
+      </c:PageHeader>
+
+      <Border Classes="card">
+        <StackPanel Spacing="10">
+          <StackPanel Spacing="4">
+            <TextBlock Classes="FieldLabel" Text="Client *"/>
+            <ComboBox HorizontalAlignment="Stretch" ItemsSource="{Binding ClientOptions}" SelectedItem="{Binding EditorClient}">
+              <ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding Name}"/></DataTemplate></ComboBox.ItemTemplate>
+            </ComboBox>
+          </StackPanel>
+          <StackPanel Spacing="10" DataContext="{Binding Editor}" x:CompileBindings="False">
+            <StackPanel Spacing="4">
+              <TextBlock Classes="FieldLabel" Text="Title *"/>
+              <TextBox Text="{Binding Title}"/>
+            </StackPanel>
+            <StackPanel Spacing="4">
+              <TextBlock Classes="FieldLabel" Text="Status"/>
+              <ComboBox HorizontalAlignment="Stretch" ItemsSource="{Binding StatusOptions}" SelectedItem="{Binding Status}"/>
+            </StackPanel>
+            <StackPanel Spacing="4">
+              <TextBlock Classes="FieldLabel" Text="Repo URL"/>
+              <TextBox Text="{Binding RepoUrl}"/>
+            </StackPanel>
+            <StackPanel Spacing="4">
+              <TextBlock Classes="FieldLabel" Text="Live site URL"/>
+              <TextBox Text="{Binding LiveSiteUrl}"/>
+            </StackPanel>
+            <StackPanel Spacing="4">
+              <TextBlock Classes="FieldLabel" Text="Build stack notes"/>
+              <TextBox Text="{Binding BuildStackNotes}" AcceptsReturn="True" Height="50"/>
+            </StackPanel>
+            <StackPanel Spacing="4">
+              <TextBlock Classes="FieldLabel" Text="Hosting notes"/>
+              <TextBox Text="{Binding HostingNotes}" AcceptsReturn="True" Height="50"/>
+            </StackPanel>
+            <StackPanel Spacing="4">
+              <TextBlock Classes="FieldLabel" Text="Where credentials live"/>
+              <TextBox Text="{Binding CredentialsLocation}"/>
+            </StackPanel>
+            <StackPanel Spacing="4">
+              <TextBlock Classes="FieldLabel" Text="General notes / future instructions"/>
+              <TextBox Text="{Binding GeneralNotes}" AcceptsReturn="True" Height="60"/>
+            </StackPanel>
+            <Grid ColumnDefinitions="*,*">
+              <StackPanel Grid.Column="0" Margin="0,0,12,0" Spacing="4">
+                <TextBlock Classes="FieldLabel" Text="Start date"/>
+                <DatePicker SelectedDate="{Binding StartDate}"/>
+              </StackPanel>
+              <StackPanel Grid.Column="1" Spacing="4">
+                <TextBlock Classes="FieldLabel" Text="Due date"/>
+                <DatePicker SelectedDate="{Binding DueDate}"/>
+              </StackPanel>
+            </Grid>
+            <Button Classes="secondary" Content="Generate summary (coming soon)" IsEnabled="False"/>
+          </StackPanel>
+        </StackPanel>
+      </Border>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>
