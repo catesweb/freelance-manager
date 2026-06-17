@@ -17,8 +17,8 @@ public partial class ClientsViewModel : ViewModelBase
     public ObservableCollection<Client> Clients { get; } = new();
 
     [ObservableProperty] private Client? _selected;
-    [ObservableProperty] private ClientEditViewModel? _editor;
-    [ObservableProperty] private string? _statusMessage;
+
+    public bool IsEmpty => Clients.Count == 0;
 
     public ClientsViewModel(IClientRepository repo, IDialogService dialogs, INotificationService notes)
     {
@@ -39,43 +39,36 @@ public partial class ClientsViewModel : ViewModelBase
         {
             _notes.Show($"Load failed: {ex.Message}", NotificationKind.Error);
         }
-    }
-
-    [RelayCommand] private void New() => Editor = new ClientEditViewModel(new Client());
-
-    [RelayCommand]
-    private void Edit()
-    {
-        if (Selected is not null) Editor = new ClientEditViewModel(Selected);
+        OnPropertyChanged(nameof(IsEmpty));
     }
 
     [RelayCommand]
-    private async Task Save()
+    private async Task New()
     {
-        if (Editor is null || !Editor.IsValid)
-        {
-            StatusMessage = "Name is required and email must be valid.";
-            return;
-        }
-
-        if (Editor.Id == 0)
+        var editor = new ClientEditViewModel(new Client());
+        if (await _dialogs.ShowDialogAsync(editor))
         {
             var model = new Client();
-            Editor.ApplyTo(model);
+            editor.ApplyTo(model);
             await _repo.AddAsync(model);
+            _notes.Show("Client added.", NotificationKind.Success);
+            await LoadAsync();
         }
-        else
-        {
-            var model = await _repo.GetAsync(Editor.Id);
-            if (model is not null) { Editor.ApplyTo(model); await _repo.UpdateAsync(model); }
-        }
-
-        Editor = null;
-        StatusMessage = "Saved.";
-        await LoadAsync();
     }
 
-    [RelayCommand] private void Cancel() => Editor = null;
+    [RelayCommand]
+    private async Task Edit()
+    {
+        if (Selected is null) return;
+        var editor = new ClientEditViewModel(Selected);
+        if (await _dialogs.ShowDialogAsync(editor))
+        {
+            var model = await _repo.GetAsync(editor.Id);
+            if (model is not null) { editor.ApplyTo(model); await _repo.UpdateAsync(model); }
+            _notes.Show("Client saved.", NotificationKind.Success);
+            await LoadAsync();
+        }
+    }
 
     [RelayCommand]
     private async Task Delete()

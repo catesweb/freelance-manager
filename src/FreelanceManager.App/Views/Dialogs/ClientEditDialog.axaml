@@ -1,0 +1,41 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:FreelanceManager.App.ViewModels"
+        x:Class="FreelanceManager.App.Views.Dialogs.ClientEditDialog"
+        x:DataType="vm:ClientEditViewModel"
+        Width="380" SizeToContent="Height" CanResize="False"
+        WindowStartupLocation="CenterOwner"
+        Background="{DynamicResource BgCanvas}"
+        Title="Client">
+  <StackPanel Margin="20" Spacing="10">
+    <TextBlock Classes="SectionHeading" Text="Client"/>
+    <StackPanel Spacing="4">
+      <TextBlock Classes="FieldLabel" Text="Name *"/>
+      <TextBox Text="{Binding Name}"/>
+    </StackPanel>
+    <StackPanel Spacing="4">
+      <TextBlock Classes="FieldLabel" Text="Company"/>
+      <TextBox Text="{Binding Company}"/>
+    </StackPanel>
+    <StackPanel Spacing="4">
+      <TextBlock Classes="FieldLabel" Text="Email"/>
+      <TextBox Text="{Binding Email}"/>
+    </StackPanel>
+    <StackPanel Spacing="4">
+      <TextBlock Classes="FieldLabel" Text="Phone"/>
+      <TextBox Text="{Binding Phone}"/>
+    </StackPanel>
+    <StackPanel Spacing="4">
+      <TextBlock Classes="FieldLabel" Text="Address"/>
+      <TextBox Text="{Binding Address}" AcceptsReturn="True" Height="60"/>
+    </StackPanel>
+    <StackPanel Spacing="4">
+      <TextBlock Classes="FieldLabel" Text="Notes"/>
+      <TextBox Text="{Binding Notes}" AcceptsReturn="True" Height="60"/>
+    </StackPanel>
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+      <Button Classes="secondary" Content="Cancel" Click="OnCancel"/>
+      <Button Classes="primary" Content="Save" Click="OnSave"/>
+    </StackPanel>
+  </StackPanel>
+</Window>

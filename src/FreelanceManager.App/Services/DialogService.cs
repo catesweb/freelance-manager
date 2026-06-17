@@ -23,6 +23,15 @@ public class DialogService : IDialogService
         return await dlg.ShowDialog<bool>(Owner);
     }
 
-    public Task<bool> ShowDialogAsync(object viewModel)
-        => throw new NotSupportedException("Implemented in a later task.");
+    public async Task<bool> ShowDialogAsync(object viewModel)
+    {
+        if (Owner is null) return false;
+        Window dlg = viewModel switch
+        {
+            ViewModels.ClientEditViewModel => new ClientEditDialog(),
+            _ => throw new System.NotSupportedException($"No dialog for {viewModel.GetType().Name}")
+        };
+        dlg.DataContext = viewModel;
+        return await dlg.ShowDialog<bool>(Owner);
+    }
 }
