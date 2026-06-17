@@ -21,6 +21,23 @@
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
 
+  <!-- Embed QuestPDF's default Lato font into the assembly so the published
+       single-file exe is fully self-contained (no loose LatoFont folder beside it).
+       Registered at startup in App.OnFrameworkInitializationCompleted. -->
+  <ItemGroup>
+    <EmbeddedResource Include="$(PkgQuestPDF)\LatoFont\*.ttf">
+      <LogicalName>FreelanceManager.App.Fonts.%(Filename)%(Extension)</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <!-- QuestPDF.targets copies those same *.ttf next to the build output as loose
+       None items; we embed them instead, so drop them before they are copied. -->
+  <Target Name="StripQuestPdfLooseFonts" BeforeTargets="AssignTargetPaths">
+    <ItemGroup>
+      <None Remove="@(None)" Condition="$([System.String]::Copy('%(None.Link)').StartsWith('LatoFont'))" />
+    </ItemGroup>
+  </Target>
+
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="12.0.4" />
     <PackageReference Include="Avalonia.Controls.DataGrid" Version="12.0.0" />
@@ -33,7 +50,7 @@
     </PackageReference>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0" />
-    <PackageReference Include="QuestPDF" Version="2026.6.0" />
+    <PackageReference Include="QuestPDF" Version="2026.6.0" GeneratePathProperty="true" />
   </ItemGroup>
 
   <ItemGroup>

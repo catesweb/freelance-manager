@@ -18,6 +18,7 @@ public partial class App : Application
     public override void OnFrameworkInitializationCompleted()
     {
         QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
+        RegisterEmbeddedFonts();
 
         Services = ServiceConfiguration.Build();
 
@@ -35,6 +36,22 @@ public partial class App : Application
         // ThemeVariant.Default already follows the OS, so the brief window before this
         // completes shows the system variant rather than a wrong one.
         _ = ApplySavedThemeAsync();
+    }
+
+    // Lato (QuestPDF's default font) is embedded as a resource rather than shipped as
+    // loose .ttf files, so register it with QuestPDF before any PDF is generated.
+    private static void RegisterEmbeddedFonts()
+    {
+        var asm = typeof(App).Assembly;
+        foreach (var name in asm.GetManifestResourceNames())
+        {
+            if (name.Contains(".Fonts.", StringComparison.OrdinalIgnoreCase)
+                && name.EndsWith(".ttf", StringComparison.OrdinalIgnoreCase))
+            {
+                using var stream = asm.GetManifestResourceStream(name)!;
+                QuestPDF.Drawing.FontManager.RegisterFont(stream);
+            }
+        }
     }
 
     private static async Task ApplySavedThemeAsync()
