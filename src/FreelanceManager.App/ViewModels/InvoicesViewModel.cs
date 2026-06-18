@@ -132,6 +132,25 @@ public partial class InvoicesViewModel : ViewModelBase
     [RelayCommand] private void Cancel() => Editor = null;
 
     [RelayCommand]
+    private async Task SetStatus(InvoiceStatus status)
+    {
+        if (Selected is null) return;
+        try
+        {
+            var model = await _invoices.GetAsync(Selected.Id);
+            if (model is null) return;
+            model.Status = status;
+            await _invoices.UpdateAsync(model);
+            _notes.Show("Status updated.", NotificationKind.Success);
+            await LoadAsync();
+        }
+        catch (System.Exception ex)
+        {
+            _notes.Show($"Update failed: {ex.Message}", NotificationKind.Error);
+        }
+    }
+
+    [RelayCommand]
     private async Task Delete()
     {
         if (Selected is null) return;
