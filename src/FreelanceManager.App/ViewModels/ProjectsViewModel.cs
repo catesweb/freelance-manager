@@ -104,6 +104,25 @@ public partial class ProjectsViewModel : ViewModelBase
     [RelayCommand] private void Cancel() => Editor = null;
 
     [RelayCommand]
+    private async Task SetStatus(ProjectStatus status)
+    {
+        if (Selected is null) return;
+        try
+        {
+            var model = await _projects.GetAsync(Selected.Id);
+            if (model is null) return;
+            model.Status = status;
+            await _projects.UpdateAsync(model);
+            _notes.Show("Status updated.", NotificationKind.Success);
+            await LoadAsync();
+        }
+        catch (System.Exception ex)
+        {
+            _notes.Show($"Update failed: {ex.Message}", NotificationKind.Error);
+        }
+    }
+
+    [RelayCommand]
     private async Task Delete()
     {
         if (Selected is null) return;
