@@ -15,6 +15,20 @@
           <TextBlock Text="Freelance Manager" Classes="SectionHeading" VerticalAlignment="Center"/>
         </StackPanel>
 
+        <Button Classes="primary" HorizontalAlignment="Stretch" Margin="6,0,6,10">
+          <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+            <TextBlock Text="+" FontWeight="Bold"/>
+            <TextBlock Text="New"/>
+          </StackPanel>
+          <Button.Flyout>
+            <MenuFlyout>
+              <MenuItem Header="New invoice" Command="{Binding QuickNewInvoiceCommand}"/>
+              <MenuItem Header="New project" Command="{Binding QuickNewProjectCommand}"/>
+              <MenuItem Header="New client"  Command="{Binding QuickNewClientCommand}"/>
+            </MenuFlyout>
+          </Button.Flyout>
+        </Button>
+
         <Button Classes="nav" Command="{Binding ShowDashboardCommand}"
                 Classes.active="{Binding IsDashboardActive}">
           <StackPanel Orientation="Horizontal" Spacing="10">

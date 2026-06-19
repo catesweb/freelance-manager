@@ -40,4 +40,22 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand] private void ShowProjects()  { CurrentPage = _services.GetRequiredService<ProjectsViewModel>();  ActivePage = "Projects"; }
     [RelayCommand] private void ShowInvoices()  { CurrentPage = _services.GetRequiredService<InvoicesViewModel>();  ActivePage = "Invoices"; }
     [RelayCommand] private void ShowSettings()  { CurrentPage = _services.GetRequiredService<SettingsViewModel>();  ActivePage = "Settings"; }
+
+    [RelayCommand] private void QuickNewClient()
+    {
+        ShowClients();
+        (CurrentPage as ClientsViewModel)?.NewCommand.Execute(null);
+    }
+
+    [RelayCommand] private void QuickNewProject()
+    {
+        ShowProjects();
+        (CurrentPage as ProjectsViewModel)?.NewCommand.Execute(null);
+    }
+
+    [RelayCommand] private void QuickNewInvoice()
+    {
+        ShowInvoices();
+        (CurrentPage as InvoicesViewModel)?.NewCommand.Execute(null);
+    }
 }
