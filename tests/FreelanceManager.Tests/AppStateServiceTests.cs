@@ -21,4 +21,17 @@ public class AppStateServiceTests
         }
         finally { if (File.Exists(path)) File.Delete(path); }
     }
+
+    [Fact]
+    public void CorruptFile_defaults_to_not_dismissed()
+    {
+        var path = Path.Combine(Path.GetTempPath(), $"fm-state-{System.Guid.NewGuid():N}.json");
+        try
+        {
+            File.WriteAllText(path, "{ not valid json");
+            var service = new AppStateService(path);
+            Assert.False(service.OnboardingDismissed);
+        }
+        finally { if (File.Exists(path)) File.Delete(path); }
+    }
 }

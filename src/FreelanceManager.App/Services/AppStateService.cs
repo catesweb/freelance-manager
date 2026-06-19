@@ -12,9 +12,19 @@ public class AppStateService : IAppStateService
     public AppStateService(string path)
     {
         _path = path;
-        _state = File.Exists(_path)
-            ? JsonSerializer.Deserialize<State>(File.ReadAllText(_path)) ?? new State(false)
-            : new State(false);
+        _state = new State(false);
+        if (File.Exists(_path))
+        {
+            try
+            {
+                var deserialized = JsonSerializer.Deserialize<State>(File.ReadAllText(_path));
+                if (deserialized != null)
+                {
+                    _state = deserialized;
+                }
+            }
+            catch { }
+        }
     }
 
     public bool OnboardingDismissed => _state.OnboardingDismissed;
