@@ -52,21 +52,31 @@
             </StackPanel>
 
             <TextBlock Classes="SectionHeading" Text="Line items" Margin="0,6,0,0"/>
-            <DataGrid ItemsSource="{Binding Lines}" AutoGenerateColumns="False" Height="200" CanUserReorderColumns="False">
+            <DataGrid ItemsSource="{Binding Lines}" AutoGenerateColumns="False" Height="220"
+                      CanUserReorderColumns="False" GridLinesVisibility="Horizontal">
               <DataGrid.Columns>
                 <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="*"/>
-                <DataGridTextColumn Header="Qty" Binding="{Binding Quantity}"/>
-                <DataGridTextColumn Header="Unit" Binding="{Binding UnitPrice}"/>
-                <DataGridTextColumn Header="Total" Binding="{Binding LineTotal, StringFormat={}{0:0.00}}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Qty"  Binding="{Binding Quantity}"  Width="80"/>
+                <DataGridTextColumn Header="Rate" Binding="{Binding UnitPrice}" Width="100"/>
+                <DataGridTextColumn Header="Amount" Binding="{Binding LineTotal, StringFormat={}{0:0.00}}"
+                                    Width="110" IsReadOnly="True"/>
               </DataGrid.Columns>
             </DataGrid>
-            <Button Classes="secondary" Content="Add line" Command="{Binding AddLineCommand}" HorizontalAlignment="Left"/>
+            <Button Classes="ghost" Content="+ Add line item" Command="{Binding AddLineCommand}" HorizontalAlignment="Left"/>
 
-            <StackPanel Spacing="2" HorizontalAlignment="Right">
-              <TextBlock Classes="Caption" Text="{Binding Subtotal, StringFormat=Subtotal: {0:0.00}}"/>
-              <TextBlock Classes="Caption" Text="{Binding Tax, StringFormat=Tax: {0:0.00}}"/>
-              <TextBlock Classes="SectionHeading" Text="{Binding Total, StringFormat=Total: {0:0.00}}"/>
-            </StackPanel>
+            <Border Classes="card" HorizontalAlignment="Right" Padding="14,10" Margin="0,8,0,0">
+              <Grid ColumnDefinitions="Auto,Auto" RowDefinitions="Auto,Auto,Auto" >
+                <TextBlock Grid.Row="0" Grid.Column="0" Classes="Caption" Text="Subtotal" Margin="0,0,24,2"/>
+                <TextBlock Grid.Row="0" Grid.Column="1" Classes="Metric" FontSize="13" HorizontalAlignment="Right"
+                           Text="{Binding Subtotal, StringFormat={}{0:0.00}}"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Classes="Caption" Text="Tax" Margin="0,0,24,6"/>
+                <TextBlock Grid.Row="1" Grid.Column="1" Classes="Metric" FontSize="13" HorizontalAlignment="Right"
+                           Text="{Binding Tax, StringFormat={}{0:0.00}}"/>
+                <TextBlock Grid.Row="2" Grid.Column="0" Classes="SectionHeading" Text="Total" Margin="0,0,24,0"/>
+                <TextBlock Grid.Row="2" Grid.Column="1" Classes="Metric" FontSize="17" HorizontalAlignment="Right"
+                           Text="{Binding Total, StringFormat={}{0:0.00}}"/>
+              </Grid>
+            </Border>
 
             <StackPanel Spacing="4">
               <TextBlock Classes="FieldLabel" Text="Notes"/>
