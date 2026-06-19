@@ -17,8 +17,22 @@ public partial class ClientsViewModel : ViewModelBase
     public ObservableCollection<Client> Clients { get; } = new();
 
     [ObservableProperty] private Client? _selected;
+    [ObservableProperty] private ClientEditViewModel? _editor;
 
+    public bool IsEditing => Editor is not null;
+    public bool IsNotEditing => Editor is null;
     public bool IsEmpty => Clients.Count == 0;
+
+    partial void OnEditorChanged(ClientEditViewModel? value)
+    {
+        OnPropertyChanged(nameof(IsEditing));
+        OnPropertyChanged(nameof(IsNotEditing));
+    }
+
+    partial void OnSelectedChanged(Client? value)
+    {
+        if (value is not null) OpenEditor(value);
+    }
 
     public ClientsViewModel(IClientRepository repo, IDialogService dialogs, INotificationService notes)
     {
@@ -42,40 +56,54 @@ public partial class ClientsViewModel : ViewModelBase
         OnPropertyChanged(nameof(IsEmpty));
     }
 
-    [RelayCommand]
-    private async Task New()
+    private void OpenEditor(Client model)
     {
-        var editor = new ClientEditViewModel(new Client());
-        if (await _dialogs.ShowDialogAsync(editor))
+        Editor = new ClientEditViewModel(model);
+    }
+
+    [RelayCommand]
+    private void New()
+    {
+        Selected = null;
+        Editor = new ClientEditViewModel(new Client());
+    }
+
+    [RelayCommand]
+    private async Task Save()
+    {
+        if (Editor is null) return;
+        if (!Editor.IsValid) { _notes.Show("Name is required.", NotificationKind.Error); return; }
+
+        try
         {
-            var model = new Client();
-            editor.ApplyTo(model);
-            await _repo.AddAsync(model);
-            _notes.Show("Client added.", NotificationKind.Success);
+            if (Editor.Id == 0)
+            {
+                var model = new Client();
+                Editor.ApplyTo(model);
+                await _repo.AddAsync(model);
+            }
+            else
+            {
+                var model = await _repo.GetAsync(Editor.Id);
+                if (model is not null) { Editor.ApplyTo(model); await _repo.UpdateAsync(model); }
+            }
+
+            Editor = null;
+            Selected = null;
+            _notes.Show("Client saved.", NotificationKind.Success);
             await LoadAsync();
+        }
+        catch (System.Exception ex)
+        {
+            _notes.Show($"Save failed: {ex.Message}", NotificationKind.Error);
         }
     }
 
     [RelayCommand]
-    private async Task Edit()
+    private void Cancel()
     {
-        if (Selected is null) return;
-        var editor = new ClientEditViewModel(Selected);
-        if (await _dialogs.ShowDialogAsync(editor))
-        {
-            var model = await _repo.GetAsync(editor.Id);
-            if (model is not null)
-            {
-                editor.ApplyTo(model);
-                await _repo.UpdateAsync(model);
-                _notes.Show("Client saved.", NotificationKind.Success);
-            }
-            else
-            {
-                _notes.Show("Client no longer exists.", NotificationKind.Error);
-            }
-            await LoadAsync();
-        }
+        Editor = null;
+        Selected = null;
     }
 
     [RelayCommand]
@@ -88,6 +116,8 @@ public partial class ClientsViewModel : ViewModelBase
         try
         {
             await _repo.DeleteAsync(Selected.Id);
+            Editor = null;
+            Selected = null;
             await LoadAsync();
             _notes.Show("Client deleted.", NotificationKind.Success);
         }

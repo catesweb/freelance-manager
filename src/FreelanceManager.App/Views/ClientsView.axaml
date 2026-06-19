@@ -2,33 +2,43 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:FreelanceManager.App.ViewModels"
              xmlns:c="using:FreelanceManager.App.Controls"
+             xmlns:views="using:FreelanceManager.App.Views"
              x:Class="FreelanceManager.App.Views.ClientsView"
              x:DataType="vm:ClientsViewModel">
   <Grid RowDefinitions="Auto,*">
     <c:PageHeader Grid.Row="0" Title="Clients">
       <c:PageHeader.Actions>
-        <StackPanel Orientation="Horizontal" Spacing="8">
-          <Button Classes="primary" Content="New" Command="{Binding NewCommand}"/>
-          <Button Classes="secondary" Content="Edit" Command="{Binding EditCommand}"/>
-          <Button Classes="danger" Content="Delete" Command="{Binding DeleteCommand}"/>
-        </StackPanel>
+        <Button Classes="primary" Content="New" Command="{Binding NewCommand}"/>
       </c:PageHeader.Actions>
     </c:PageHeader>
 
-    <Panel Grid.Row="1">
-      <DataGrid ItemsSource="{Binding Clients}" SelectedItem="{Binding Selected}"
-                IsReadOnly="True" AutoGenerateColumns="False">
-        <DataGrid.Columns>
-          <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
-          <DataGridTextColumn Header="Company" Binding="{Binding Company}"/>
-          <DataGridTextColumn Header="Email" Binding="{Binding Email}"/>
-        </DataGrid.Columns>
-      </DataGrid>
-      <c:EmptyState Message="No clients yet"
-                    Hint="Add your first client to start creating projects and invoices."
-                    Icon="{DynamicResource IconClients}"
-                    ActionText="Add a client" Command="{Binding NewCommand}"
-                    IsVisible="{Binding IsEmpty}"/>
-    </Panel>
+    <Grid Grid.Row="1" ColumnDefinitions="360,*">
+      <!-- list -->
+      <Border Grid.Column="0" BorderBrush="{DynamicResource Border}" BorderThickness="0,0,1,0" Margin="0,0,16,0">
+        <Panel>
+          <DataGrid ItemsSource="{Binding Clients}" SelectedItem="{Binding Selected}"
+                    IsReadOnly="True" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
+              <DataGridTextColumn Header="Company" Binding="{Binding Company}"/>
+              <DataGridTextColumn Header="Email" Binding="{Binding Email}"/>
+            </DataGrid.Columns>
+          </DataGrid>
+          <c:EmptyState Message="No clients yet"
+                        Hint="Add your first client to start creating projects and invoices."
+                        Icon="{DynamicResource IconClients}"
+                        ActionText="Add a client" Command="{Binding NewCommand}"
+                        IsVisible="{Binding IsEmpty}"/>
+        </Panel>
+      </Border>
+
+      <!-- detail -->
+      <Panel Grid.Column="1">
+        <views:ClientEditView IsVisible="{Binding IsEditing}"/>
+        <TextBlock Classes="Caption" Text="Select a client, or click New."
+                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                   IsVisible="{Binding IsNotEditing}"/>
+      </Panel>
+    </Grid>
   </Grid>
 </UserControl>
