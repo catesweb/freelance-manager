@@ -12,10 +12,13 @@
       </c:PageHeader.Actions>
     </c:PageHeader>
 
-    <Grid Grid.Row="1" ColumnDefinitions="360,*">
+    <Grid Grid.Row="1">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="{Binding IsEditing, Converter={StaticResource BoolToGridLength}, ConverterParameter='360|*'}"/>
+        <ColumnDefinition Width="{Binding IsEditing, Converter={StaticResource BoolToGridLength}, ConverterParameter='*|0'}"/>
+      </Grid.ColumnDefinitions>
       <!-- list -->
-      <Border Grid.Column="0" BorderBrush="{DynamicResource Border}" BorderThickness="0,0,1,0" Margin="0,0,16,0">
-        <Panel>
+      <Panel Grid.Column="0">
           <DataGrid ItemsSource="{Binding Clients}" SelectedItem="{Binding Selected}"
                     IsReadOnly="True" AutoGenerateColumns="False">
             <DataGrid.Columns>
@@ -29,16 +32,13 @@
                         Icon="{DynamicResource IconClients}"
                         ActionText="Add a client" Command="{Binding NewCommand}"
                         IsVisible="{Binding IsEmpty}"/>
-        </Panel>
-      </Border>
+      </Panel>
 
       <!-- detail -->
-      <Panel Grid.Column="1">
-        <views:ClientEditView IsVisible="{Binding IsEditing}"/>
-        <TextBlock Classes="Caption" Text="Select a client, or click New."
-                   HorizontalAlignment="Center" VerticalAlignment="Center"
-                   IsVisible="{Binding IsNotEditing}"/>
-      </Panel>
+      <Border Grid.Column="1" IsVisible="{Binding IsEditing}"
+              BorderBrush="{DynamicResource Border}" BorderThickness="1,0,0,0" Padding="16,0,0,0">
+        <views:ClientEditView/>
+      </Border>
     </Grid>
   </Grid>
 </UserControl>

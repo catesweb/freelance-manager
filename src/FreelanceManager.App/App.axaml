@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="FreelanceManager.App.App"
              xmlns:local="using:FreelanceManager.App"
+             xmlns:conv="using:FreelanceManager.App.Converters"
              RequestedThemeVariant="Default">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
@@ -16,6 +17,7 @@
           <ResourceInclude Source="avares://FreelanceManager/Themes/Icons.axaml"/>
           <ResourceInclude Source="avares://FreelanceManager/Themes/Notifications.axaml"/>
         </ResourceDictionary.MergedDictionaries>
+        <conv:BoolToGridLengthConverter x:Key="BoolToGridLength"/>
       </ResourceDictionary>
     </Application.Resources>
 
