@@ -41,6 +41,11 @@ public partial class InvoicesViewModel : ViewModelBase
         OnPropertyChanged(nameof(IsNotEditing));
     }
 
+    partial void OnSelectedChanged(InvoiceRow? value)
+    {
+        if (value is not null) _ = Edit();
+    }
+
     public InvoicesViewModel(
         IInvoiceRepository invoices, IClientRepository clients, IProjectRepository projects,
         IInvoiceNumberGenerator numbers, IBusinessProfileRepository profiles,
