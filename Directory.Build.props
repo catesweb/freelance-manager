@@ -1,0 +1,11 @@
+<Project>
+
+  <!-- Single source of truth for the product version across all projects.
+       To cut a release, bump <VersionPrefix> here (one line) and tag it. -->
+  <PropertyGroup>
+    <VersionPrefix>0.1.0</VersionPrefix>
+    <AssemblyVersion>$(VersionPrefix).0</AssemblyVersion>
+    <FileVersion>$(VersionPrefix).0</FileVersion>
+  </PropertyGroup>
+
+</Project>
