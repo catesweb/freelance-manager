@@ -3,6 +3,7 @@
              xmlns:vm="using:FreelanceManager.App.ViewModels"
              xmlns:c="using:FreelanceManager.App.Controls"
              xmlns:views="using:FreelanceManager.App.Views"
+             xmlns:models="using:FreelanceManager.Core.Models"
              x:Class="FreelanceManager.App.Views.ProjectsView"
              x:DataType="vm:ProjectsViewModel">
   <Panel>
@@ -24,7 +25,20 @@
             <DataGridTextColumn Header="Client" Binding="{Binding Client.Name}"/>
             <DataGridTemplateColumn Header="Status">
               <DataGridTemplateColumn.CellTemplate>
-                <DataTemplate><c:StatusBadge Status="{Binding Status}" HorizontalAlignment="Left"/></DataTemplate>
+                <DataTemplate>
+                  <Button HorizontalAlignment="Center" Padding="0" Background="Transparent"
+                          BorderThickness="0" Cursor="Hand">
+                    <c:StatusBadge Status="{Binding Status}"/>
+                    <Button.Flyout>
+                      <MenuFlyout>
+                        <MenuItem Header="Lead" Tag="{x:Static models:ProjectStatus.Lead}" Click="OnSetProjectStatus"/>
+                        <MenuItem Header="Active" Tag="{x:Static models:ProjectStatus.Active}" Click="OnSetProjectStatus"/>
+                        <MenuItem Header="Complete" Tag="{x:Static models:ProjectStatus.Complete}" Click="OnSetProjectStatus"/>
+                        <MenuItem Header="Archived" Tag="{x:Static models:ProjectStatus.Archived}" Click="OnSetProjectStatus"/>
+                      </MenuFlyout>
+                    </Button.Flyout>
+                  </Button>
+                </DataTemplate>
               </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
             <DataGridTextColumn Header="Due" Binding="{Binding DueDate, StringFormat={}{0:yyyy-MM-dd}}"/>

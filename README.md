@@ -1,11 +1,20 @@
 # Freelance Manager
 
+[![.NET](https://img.shields.io/badge/.NET-10-512BD4?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
+[![C#](https://img.shields.io/badge/C%23-239120?logo=csharp&logoColor=white)](https://learn.microsoft.com/dotnet/csharp/)
+[![Avalonia UI](https://img.shields.io/badge/Avalonia%20UI-12-8B44AC)](https://avaloniaui.net/)
+[![SQLite](https://img.shields.io/badge/SQLite-EF%20Core%2010-003B57?logo=sqlite&logoColor=white)](https://www.sqlite.org/)
+[![CI](https://img.shields.io/github/actions/workflow/status/catesweb/freelance-manager/ci.yml?branch=staging&label=build)](https://github.com/catesweb/freelance-manager/actions/workflows/ci.yml)
+[![Last commit](https://img.shields.io/github/last-commit/catesweb/freelance-manager/staging)](https://github.com/catesweb/freelance-manager/commits/staging)
+[![Platform](https://img.shields.io/badge/platform-Windows-0078D6?logo=windows&logoColor=white)](#)
+[![License](https://img.shields.io/github/license/catesweb/freelance-manager)](LICENSE)
+
 A native, **local-first** Windows desktop application for freelance web designers to manage
 clients, projects, and invoices in one place. All data lives on your machine — no cloud
 account or server required — and the app works fully offline, reaching the internet only for
 opt-in features (e.g. future invoice sending and payments).
 
-> **Status:** Foundation build complete — builds clean, 38/38 tests passing.
+> **Status:** Foundation build complete — builds clean, 50/50 tests passing.
 > This README is kept continuously up to date as the project evolves.
 
 ---
@@ -32,13 +41,17 @@ Cross-platform by design (Windows first; macOS later with no rewrite).
   the client has projects or invoices.
 - **Projects** — CRUD capturing handover details (repo URL, live site, hosting notes,
   credentials location, build-stack notes, general notes, dates) and status
-  (Lead → Active → Complete → Archived).
+  (Lead → Active → Complete → Archived), **editable inline** from the list by clicking the
+  status pill.
 - **Invoices** — create/edit, optional link to a project, line items with live
   subtotal/tax/total, auto invoice numbering from a configurable format, statuses
-  (Draft/Sent/Paid) with **derived Overdue**, and branded **PDF export**.
+  (Draft/Sent/Paid) with **derived Overdue** — settable inline from the list pill — and
+  branded **PDF export**.
 - **Settings** — business profile (name, address, logo, email), default currency, default tax
   rate, invoice-number format, and a one-click timestamped **Backup**.
 - **Dashboard** — active project count, outstanding invoice total, overdue count.
+- **Themed toast notifications** — success/error feedback styled to the app's design tokens
+  (light/dark aware).
 
 **Deferred (data captured now; engines later)**
 - Invoice email sending.
@@ -99,3 +112,7 @@ The database and backups are created under `%AppData%\FreelanceManager\`
 1. Invoice email sending (SMTP + PDF attachment).
 2. Payment tracking, then online payment providers.
 3. Project auto-scrape summary / customer handover document.
+
+## License
+
+Released under the [MIT License](LICENSE).

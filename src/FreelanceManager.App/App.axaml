@@ -14,6 +14,7 @@
         <ResourceDictionary.MergedDictionaries>
           <ResourceInclude Source="avares://FreelanceManager/Themes/Tokens.axaml"/>
           <ResourceInclude Source="avares://FreelanceManager/Themes/Icons.axaml"/>
+          <ResourceInclude Source="avares://FreelanceManager/Themes/Notifications.axaml"/>
         </ResourceDictionary.MergedDictionaries>
       </ResourceDictionary>
     </Application.Resources>
