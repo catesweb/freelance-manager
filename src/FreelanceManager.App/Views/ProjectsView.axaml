@@ -44,7 +44,10 @@
             <DataGridTextColumn Header="Due" Binding="{Binding DueDate, StringFormat={}{0:yyyy-MM-dd}}"/>
           </DataGrid.Columns>
         </DataGrid>
-        <c:EmptyState Message="No projects yet" Hint="Click New to create one."
+        <c:EmptyState Message="No projects yet"
+                      Hint="Create a project to track handover details and deadlines."
+                      Icon="{DynamicResource IconProjects}"
+                      ActionText="New project" Command="{Binding NewCommand}"
                       IsVisible="{Binding IsEmpty}"/>
       </Panel>
     </Grid>

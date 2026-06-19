@@ -24,7 +24,10 @@
           <DataGridTextColumn Header="Email" Binding="{Binding Email}"/>
         </DataGrid.Columns>
       </DataGrid>
-      <c:EmptyState Message="No clients yet" Hint="Click New to add your first client."
+      <c:EmptyState Message="No clients yet"
+                    Hint="Add your first client to start creating projects and invoices."
+                    Icon="{DynamicResource IconClients}"
+                    ActionText="Add a client" Command="{Binding NewCommand}"
                     IsVisible="{Binding IsEmpty}"/>
     </Panel>
   </Grid>

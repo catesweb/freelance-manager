@@ -3,10 +3,19 @@
              x:Class="FreelanceManager.App.Controls.EmptyState"
              x:CompileBindings="False"
              x:Name="Root">
-  <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="6">
-    <TextBlock Classes="SectionHeading" HorizontalAlignment="Center"
+  <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10" MaxWidth="300">
+    <Border Width="48" Height="48" CornerRadius="14" Background="{DynamicResource AccentSubtle}"
+            HorizontalAlignment="Center">
+      <Path Width="22" Height="22" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"
+            Fill="{DynamicResource AccentPrimary}" Data="{Binding Icon, ElementName=Root}"/>
+    </Border>
+    <TextBlock Classes="SectionHeading" HorizontalAlignment="Center" TextAlignment="Center"
                Text="{Binding Message, ElementName=Root}"/>
-    <TextBlock Classes="Caption" HorizontalAlignment="Center"
+    <TextBlock Classes="Caption" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"
                Text="{Binding Hint, ElementName=Root}"/>
+    <Button Classes="primary" HorizontalAlignment="Center"
+            Content="{Binding ActionText, ElementName=Root}"
+            Command="{Binding Command, ElementName=Root}"
+            IsVisible="{Binding ActionText, ElementName=Root, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
   </StackPanel>
 </UserControl>

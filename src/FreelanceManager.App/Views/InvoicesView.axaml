@@ -46,7 +46,10 @@
             <DataGridTextColumn Header="Total" Binding="{Binding Total, StringFormat={}{0:0.00}}"/>
           </DataGrid.Columns>
         </DataGrid>
-        <c:EmptyState Message="No invoices yet" Hint="Click New to create one."
+        <c:EmptyState Message="No invoices yet"
+                      Hint="Create your first invoice and export it as a branded PDF."
+                      Icon="{DynamicResource IconInvoices}"
+                      ActionText="New invoice" Command="{Binding NewCommand}"
                       IsVisible="{Binding IsEmpty}"/>
       </Panel>
     </Grid>
