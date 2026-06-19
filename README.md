@@ -96,6 +96,20 @@ dotnet run --project src/FreelanceManager.App   # launch the app
 The database and backups are created under `%AppData%\FreelanceManager\`
 (`freelance-manager.db`, `backups/`). EF Core migrations are applied automatically on startup.
 
+## Releases & updates
+
+Distribution is a **Velopack** installer (per-user managed folders), not a loose
+self-contained exe. Pushing a `vX.Y.Z` tag runs [`release.yml`](.github/workflows/release.yml),
+which publishes, packs, and uploads the release to GitHub Releases.
+
+The installed app checks GitHub Releases for newer versions: silently on startup
+(notifies only if one is waiting) and on demand via **Settings → Check for updates**,
+which downloads and restarts into the new version. Both are no-ops in a dev/unpackaged
+run, so updates only work once installed from a release.
+
+The product version lives in one place — `<VersionPrefix>` in
+[`Directory.Build.props`](Directory.Build.props). Bump it, then tag the same value to cut a release.
+
 ## Branching & workflow
 
 - **`master`** — production/release line.
