@@ -23,7 +23,9 @@ public class AppStateService : IAppStateService
                     _state = deserialized;
                 }
             }
-            catch { }
+            // Best-effort read: a missing/unreadable/corrupt onboarding-state file
+            // (corruption, IO, permissions) must default to not-dismissed and never block startup.
+            catch (System.Exception) { }
         }
     }
 
