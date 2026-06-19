@@ -63,11 +63,12 @@ public partial class ProjectsViewModel : ViewModelBase
 
     [RelayCommand] private void New()
     {
+        Selected = null;
         Editor = new ProjectEditViewModel(new Project());
         EditorClient = null;
     }
 
-    [RelayCommand] private void Edit()
+    private void Edit()
     {
         if (Selected is null) return;
         Editor = new ProjectEditViewModel(Selected);
@@ -97,6 +98,7 @@ public partial class ProjectsViewModel : ViewModelBase
             }
 
             Editor = null;
+            Selected = null;
             _notes.Show("Project saved.", NotificationKind.Success);
             await LoadAsync();
         }
@@ -106,7 +108,11 @@ public partial class ProjectsViewModel : ViewModelBase
         }
     }
 
-    [RelayCommand] private void Cancel() => Editor = null;
+    [RelayCommand] private void Cancel()
+    {
+        Editor = null;
+        Selected = null;
+    }
 
     [RelayCommand]
     private async Task SetStatus(ProjectStatus status)
@@ -137,6 +143,8 @@ public partial class ProjectsViewModel : ViewModelBase
         try
         {
             await _projects.DeleteAsync(Selected.Id);
+            Editor = null;
+            Selected = null;
             await LoadAsync();
             _notes.Show("Project deleted.", NotificationKind.Success);
         }
