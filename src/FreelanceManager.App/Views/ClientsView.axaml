@@ -14,7 +14,7 @@
 
     <Grid Grid.Row="1">
       <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="{Binding IsEditing, Converter={StaticResource BoolToGridLength}, ConverterParameter='360|*'}"/>
+        <ColumnDefinition Width="*"/>
         <ColumnDefinition Width="{Binding IsEditing, Converter={StaticResource BoolToGridLength}, ConverterParameter='*|0'}"/>
       </Grid.ColumnDefinitions>
       <!-- list -->

@@ -5,7 +5,7 @@
              x:Class="FreelanceManager.App.Views.ProjectEditView"
              x:DataType="vm:ProjectsViewModel">
   <ScrollViewer>
-    <StackPanel Spacing="16" MaxWidth="760" HorizontalAlignment="Left">
+    <StackPanel Spacing="16">
       <c:PageHeader Title="Edit project">
         <c:PageHeader.Actions>
           <StackPanel Orientation="Horizontal" Spacing="8">
@@ -57,16 +57,16 @@
               <TextBlock Classes="FieldLabel" Text="General notes / future instructions"/>
               <TextBox Text="{Binding GeneralNotes}" AcceptsReturn="True" Height="60"/>
             </StackPanel>
-            <Grid ColumnDefinitions="*,*">
-              <StackPanel Grid.Column="0" Margin="0,0,12,0" Spacing="4">
+            <WrapPanel Orientation="Horizontal">
+              <StackPanel Margin="0,0,12,8" Spacing="4">
                 <TextBlock Classes="FieldLabel" Text="Start date"/>
                 <DatePicker SelectedDate="{Binding StartDate}"/>
               </StackPanel>
-              <StackPanel Grid.Column="1" Spacing="4">
+              <StackPanel Margin="0,0,0,8" Spacing="4">
                 <TextBlock Classes="FieldLabel" Text="Due date"/>
                 <DatePicker SelectedDate="{Binding DueDate}"/>
               </StackPanel>
-            </Grid>
+            </WrapPanel>
             <Button Classes="secondary" Content="Generate summary (coming soon)" IsEnabled="False"/>
           </StackPanel>
         </StackPanel>

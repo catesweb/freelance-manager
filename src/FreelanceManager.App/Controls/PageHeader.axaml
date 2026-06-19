@@ -5,7 +5,9 @@
              x:Name="Root">
   <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,16">
     <TextBlock Grid.Column="0" Classes="PageTitle" VerticalAlignment="Center"
+               Margin="0,0,16,0" TextTrimming="CharacterEllipsis"
                Text="{Binding Title, ElementName=Root}"/>
-    <ContentPresenter Grid.Column="1" Content="{Binding Actions, ElementName=Root}"/>
+    <ContentPresenter Grid.Column="1" Content="{Binding Actions, ElementName=Root}"
+                      HorizontalAlignment="Right" VerticalAlignment="Center"/>
   </Grid>
 </UserControl>

@@ -19,3 +19,6 @@ package-lock.json
 
 # Internal-only, never commit
 TODO.md
+
+# build/run logs
+*.log

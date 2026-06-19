@@ -5,7 +5,7 @@
              x:Class="FreelanceManager.App.Views.ClientEditView"
              x:DataType="vm:ClientsViewModel">
   <ScrollViewer>
-    <StackPanel Spacing="16" MaxWidth="760" HorizontalAlignment="Left">
+    <StackPanel Spacing="16">
       <c:PageHeader Title="Edit client">
         <c:PageHeader.Actions>
           <StackPanel Orientation="Horizontal" Spacing="8">
