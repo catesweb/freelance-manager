@@ -5,7 +5,7 @@ clients, projects, and invoices in one place. All data lives on your machine —
 account or server required — and the app works fully offline, reaching the internet only for
 opt-in features (e.g. future invoice sending and payments).
 
-> **Status:** Foundation build complete — builds clean, 38/38 tests passing.
+> **Status:** Foundation build complete — builds clean, 50/50 tests passing.
 > This README is kept continuously up to date as the project evolves.
 
 ---
@@ -32,13 +32,17 @@ Cross-platform by design (Windows first; macOS later with no rewrite).
   the client has projects or invoices.
 - **Projects** — CRUD capturing handover details (repo URL, live site, hosting notes,
   credentials location, build-stack notes, general notes, dates) and status
-  (Lead → Active → Complete → Archived).
+  (Lead → Active → Complete → Archived), **editable inline** from the list by clicking the
+  status pill.
 - **Invoices** — create/edit, optional link to a project, line items with live
   subtotal/tax/total, auto invoice numbering from a configurable format, statuses
-  (Draft/Sent/Paid) with **derived Overdue**, and branded **PDF export**.
+  (Draft/Sent/Paid) with **derived Overdue** — settable inline from the list pill — and
+  branded **PDF export**.
 - **Settings** — business profile (name, address, logo, email), default currency, default tax
   rate, invoice-number format, and a one-click timestamped **Backup**.
 - **Dashboard** — active project count, outstanding invoice total, overdue count.
+- **Themed toast notifications** — success/error feedback styled to the app's design tokens
+  (light/dark aware).
 
 **Deferred (data captured now; engines later)**
 - Invoice email sending.
