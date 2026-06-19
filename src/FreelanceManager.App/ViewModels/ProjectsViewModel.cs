@@ -31,6 +31,11 @@ public partial class ProjectsViewModel : ViewModelBase
         OnPropertyChanged(nameof(IsNotEditing));
     }
 
+    partial void OnSelectedChanged(Project? value)
+    {
+        if (value is not null) Edit();
+    }
+
     public ProjectsViewModel(IProjectRepository projects, IClientRepository clients, IDialogService dialogs, INotificationService notes)
     {
         _projects = projects;
