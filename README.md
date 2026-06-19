@@ -1,5 +1,14 @@
 # Freelance Manager
 
+[![.NET](https://img.shields.io/badge/.NET-10-512BD4?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
+[![C#](https://img.shields.io/badge/C%23-239120?logo=csharp&logoColor=white)](https://learn.microsoft.com/dotnet/csharp/)
+[![Avalonia UI](https://img.shields.io/badge/Avalonia%20UI-12-8B44AC)](https://avaloniaui.net/)
+[![SQLite](https://img.shields.io/badge/SQLite-EF%20Core%2010-003B57?logo=sqlite&logoColor=white)](https://www.sqlite.org/)
+[![CI](https://img.shields.io/github/actions/workflow/status/catesweb/freelance-manager/ci.yml?branch=staging&label=build)](https://github.com/catesweb/freelance-manager/actions/workflows/ci.yml)
+[![Last commit](https://img.shields.io/github/last-commit/catesweb/freelance-manager/staging)](https://github.com/catesweb/freelance-manager/commits/staging)
+[![Platform](https://img.shields.io/badge/platform-Windows-0078D6?logo=windows&logoColor=white)](#)
+[![License](https://img.shields.io/github/license/catesweb/freelance-manager)](LICENSE)
+
 A native, **local-first** Windows desktop application for freelance web designers to manage
 clients, projects, and invoices in one place. All data lives on your machine — no cloud
 account or server required — and the app works fully offline, reaching the internet only for
@@ -103,3 +112,7 @@ The database and backups are created under `%AppData%\FreelanceManager\`
 1. Invoice email sending (SMTP + PDF attachment).
 2. Payment tracking, then online payment providers.
 3. Project auto-scrape summary / customer handover document.
+
+## License
+
+Released under the [MIT License](LICENSE).
