@@ -1,0 +1,38 @@
+name: Release
+
+# Tag a commit `vX.Y.Z` to build a Velopack release and publish it to GitHub Releases.
+# The in-app updater (Settings → Check for updates) reads from these releases.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write   # vpk upload creates/edits the GitHub Release
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Derive version from tag
+        id: ver
+        shell: bash
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Install Velopack CLI
+        run: dotnet tool install -g vpk
+
+      - name: Publish
+        run: dotnet publish src/FreelanceManager.App/FreelanceManager.App.csproj -c Release -r win-x64 --self-contained -o publish
+
+      - name: Pack
+        run: vpk pack --packId FreelanceManager --packTitle "Freelance Manager" --packVersion ${{ steps.ver.outputs.version }} --packDir publish --mainExe FreelanceManager.exe --icon src/FreelanceManager.App/Assets/app-icon.ico
+
+      - name: Upload to GitHub Release
+        run: vpk upload github --repoUrl https://github.com/catesweb/freelance-manager --publish --releaseName "v${{ steps.ver.outputs.version }}" --tag ${{ github.ref_name }} --token ${{ secrets.GITHUB_TOKEN }}

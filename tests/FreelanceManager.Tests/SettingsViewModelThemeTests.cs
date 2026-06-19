@@ -33,12 +33,19 @@ public class SettingsViewModelThemeTests
         public void Show(string message, NotificationKind kind = NotificationKind.Info) { }
     }
 
+    private sealed class FakeUpdates : IUpdateService
+    {
+        public string CurrentVersion => "test";
+        public Task CheckOnStartupAsync() => Task.CompletedTask;
+        public Task CheckAndInstallAsync() => Task.CompletedTask;
+    }
+
     [Fact]
     public async Task Save_persists_and_applies_selected_theme()
     {
         var profiles = new FakeProfiles();
         var theme = new FakeTheme();
-        var vm = new SettingsViewModel(profiles, new FakeBackup(), theme, new FakeNotes());
+        var vm = new SettingsViewModel(profiles, new FakeBackup(), theme, new FakeNotes(), new FakeUpdates());
         await Task.Delay(50); // allow LoadAsync to complete
 
         vm.Theme = ThemeMode.Dark;

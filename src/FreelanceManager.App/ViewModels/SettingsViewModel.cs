@@ -13,6 +13,7 @@ public partial class SettingsViewModel : ViewModelBase
     private readonly IBackupService _backup;
     private readonly IThemeService _themeService;
     private readonly INotificationService _notes;
+    private readonly IUpdateService _updates;
     private BusinessProfile _model = new();
 
     [ObservableProperty] private string _name = string.Empty;
@@ -27,14 +28,20 @@ public partial class SettingsViewModel : ViewModelBase
 
     public static ThemeMode[] ThemeOptions { get; } = System.Enum.GetValues<ThemeMode>();
 
-    public SettingsViewModel(IBusinessProfileRepository profiles, IBackupService backup, IThemeService themeService, INotificationService notes)
+    public string AppVersion => _updates.CurrentVersion;
+
+    public SettingsViewModel(IBusinessProfileRepository profiles, IBackupService backup, IThemeService themeService, INotificationService notes, IUpdateService updates)
     {
         _profiles = profiles;
         _backup = backup;
         _themeService = themeService;
         _notes = notes;
+        _updates = updates;
         _ = LoadAsync();
     }
+
+    [RelayCommand]
+    private Task CheckForUpdates() => _updates.CheckAndInstallAsync();
 
     private async Task LoadAsync()
     {
