@@ -28,6 +28,7 @@ public static class TestServices
         sc.AddSingleton<IThemeService, FakeThemeService>();
         sc.AddSingleton<IDialogService, FakeDialogService>();
         sc.AddSingleton<INotificationService, FakeNotificationService>();
+        sc.AddSingleton<IAppStateService, FakeAppStateService>();
 
         // Repository fakes
         sc.AddTransient<IClientRepository, FakeClientRepository>();
@@ -118,5 +119,11 @@ public static class TestServices
     {
         public Task<BusinessProfile> GetAsync() => Task.FromResult(new BusinessProfile());
         public Task SaveAsync(BusinessProfile p) => Task.CompletedTask;
+    }
+
+    private sealed class FakeAppStateService : IAppStateService
+    {
+        public bool OnboardingDismissed => false;
+        public void DismissOnboarding() { }
     }
 }

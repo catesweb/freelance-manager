@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using FreelanceManager.App.Services;
 using FreelanceManager.Core.Models;
 using FreelanceManager.Core.Services;
@@ -13,21 +14,46 @@ public partial class DashboardViewModel : ViewModelBase
     private readonly IInvoiceRepository _invoices;
     private readonly IClock _clock;
     private readonly INotificationService _notes;
+    private readonly IAppStateService _appState;
+    private readonly IBusinessProfileRepository _profiles;
+    private readonly IClientRepository _clients;
 
     [ObservableProperty] private int _activeProjects;
     [ObservableProperty] private int _overdueCount;
     [ObservableProperty] private decimal _outstandingTotal;
 
+    [ObservableProperty] private bool _showOnboarding;
+    [ObservableProperty] private bool _stepProfileDone;
+    [ObservableProperty] private bool _stepClientDone;
+    [ObservableProperty] private bool _stepInvoiceDone;
+
     public ObservableCollection<AgendaItem> Agenda { get; } = new();
     public ObservableCollection<Project> PinnedProjects { get; } = new();
 
-    public DashboardViewModel(IProjectRepository projects, IInvoiceRepository invoices, IClock clock, INotificationService notes)
+    public DashboardViewModel(
+        IProjectRepository projects,
+        IInvoiceRepository invoices,
+        IClock clock,
+        INotificationService notes,
+        IAppStateService appState,
+        IBusinessProfileRepository profiles,
+        IClientRepository clients)
     {
         _projects = projects;
         _invoices = invoices;
         _clock = clock;
         _notes = notes;
+        _appState = appState;
+        _profiles = profiles;
+        _clients = clients;
         _ = RefreshAsync();
+    }
+
+    [RelayCommand]
+    private void DismissOnboarding()
+    {
+        _appState.DismissOnboarding();
+        ShowOnboarding = false;
     }
 
     public async Task RefreshAsync()
@@ -58,6 +84,14 @@ public partial class DashboardViewModel : ViewModelBase
             foreach (var p in projects.Where(p => p.Status == ProjectStatus.Active)
                                       .OrderByDescending(p => p.CreatedAt).Take(5))
                 PinnedProjects.Add(p);
+
+            // onboarding step completion
+            var profile = await _profiles.GetAsync();
+            StepProfileDone = !string.IsNullOrWhiteSpace(profile.Name);
+            StepClientDone  = (await _clients.GetAllAsync()).Any();
+            StepInvoiceDone = invoices.Count > 0;
+            ShowOnboarding  = !_appState.OnboardingDismissed
+                              && !(StepProfileDone && StepClientDone && StepInvoiceDone);
         }
         catch (System.Exception ex)
         {

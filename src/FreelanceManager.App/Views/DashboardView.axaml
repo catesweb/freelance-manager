@@ -7,6 +7,19 @@
   <StackPanel Spacing="16">
     <c:PageHeader Title="This week"/>
 
+    <!-- onboarding checklist strip -->
+    <Border Classes="card" IsVisible="{Binding ShowOnboarding}">
+      <StackPanel Spacing="8">
+        <Grid ColumnDefinitions="*,Auto">
+          <TextBlock Grid.Column="0" Classes="SectionHeading" Text="Welcome — let's get you set up"/>
+          <Button Grid.Column="1" Classes="ghost" Content="Dismiss" Command="{Binding DismissOnboardingCommand}"/>
+        </Grid>
+        <CheckBox IsChecked="{Binding StepProfileDone, Mode=OneWay}" IsHitTestVisible="False" Content="Add your business profile &amp; logo"/>
+        <CheckBox IsChecked="{Binding StepClientDone, Mode=OneWay}" IsHitTestVisible="False" Content="Add your first client"/>
+        <CheckBox IsChecked="{Binding StepInvoiceDone, Mode=OneWay}" IsHitTestVisible="False" Content="Create your first invoice"/>
+      </StackPanel>
+    </Border>
+
     <!-- compact metrics strip -->
     <StackPanel Orientation="Horizontal" Spacing="24">
       <StackPanel><TextBlock Classes="Caption" Text="Active projects"/>

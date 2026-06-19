@@ -45,12 +45,36 @@ public class DashboardViewModelAgendaTests
         public void Show(string message, NotificationKind kind = NotificationKind.Info) { }
     }
 
+    private sealed class StubAppState : IAppStateService
+    {
+        public bool OnboardingDismissed => false;
+        public void DismissOnboarding() { }
+    }
+
+    private sealed class StubProfileRepo : IBusinessProfileRepository
+    {
+        public Task<BusinessProfile> GetAsync() => Task.FromResult(new BusinessProfile());
+        public Task SaveAsync(BusinessProfile profile) => Task.CompletedTask;
+    }
+
+    private sealed class StubClientRepo : IClientRepository
+    {
+        public Task<List<Client>> GetAllAsync() => Task.FromResult(new List<Client>());
+        public Task<Client?> GetAsync(int id) => Task.FromResult<Client?>(null);
+        public Task<Client> AddAsync(Client c) => Task.FromResult(c);
+        public Task UpdateAsync(Client c) => Task.CompletedTask;
+        public Task DeleteAsync(int id) => Task.CompletedTask;
+    }
+
     private static DashboardViewModel BuildVm(IEnumerable<Project> projects)
         => new DashboardViewModel(
             new StubProjectRepo(projects),
             new StubInvoiceRepo(),
             new FixedClock(),
-            new SilentNotifications());
+            new SilentNotifications(),
+            new StubAppState(),
+            new StubProfileRepo(),
+            new StubClientRepo());
 
     [Fact]
     public async Task Pinned_shows_active_newest_first_capped_at_five()
