@@ -26,6 +26,8 @@ public static class ServiceConfiguration
         services.AddSingleton<IDialogService, DialogService>();
         services.AddSingleton<NotificationService>();
         services.AddSingleton<INotificationService>(sp => sp.GetRequiredService<NotificationService>());
+        services.AddSingleton<IAppStateService>(_ =>
+            new AppStateService(System.IO.Path.Combine(AppPaths.DataDir, "app-state.json")));
 
         services.AddTransient<IClientRepository, ClientRepository>();
         services.AddTransient<IProjectRepository, ProjectRepository>();
