@@ -5,29 +5,52 @@
              x:Class="FreelanceManager.App.Views.DashboardView"
              x:DataType="vm:DashboardViewModel">
   <StackPanel Spacing="16">
-    <c:PageHeader Title="Dashboard"/>
-    <WrapPanel>
-      <Border Classes="card" Margin="0,0,12,12" MinWidth="180">
-        <StackPanel Spacing="4">
-          <TextBlock Classes="Caption" Text="Active projects"/>
-          <TextBlock Text="{Binding ActiveProjects}" FontSize="28" FontWeight="Bold"
-                     Foreground="{DynamicResource AccentPrimary}"/>
+    <c:PageHeader Title="This week"/>
+
+    <!-- compact metrics strip -->
+    <StackPanel Orientation="Horizontal" Spacing="24">
+      <StackPanel><TextBlock Classes="Caption" Text="Active projects"/>
+        <TextBlock Classes="Metric" FontSize="20" Text="{Binding ActiveProjects}"/></StackPanel>
+      <StackPanel><TextBlock Classes="Caption" Text="Outstanding"/>
+        <TextBlock Classes="Metric" FontSize="20" Text="{Binding OutstandingTotal, StringFormat={}{0:0.00}}"/></StackPanel>
+      <StackPanel><TextBlock Classes="Caption" Text="Overdue"/>
+        <TextBlock Classes="Metric" FontSize="20" Foreground="{DynamicResource Danger}" Text="{Binding OverdueCount}"/></StackPanel>
+    </StackPanel>
+
+    <Grid ColumnDefinitions="*,260" >
+      <!-- agenda -->
+      <Border Grid.Column="0" Classes="card" Margin="0,0,16,0">
+        <Panel>
+          <ItemsControl ItemsSource="{Binding Agenda}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <Grid ColumnDefinitions="90,*,Auto" Margin="0,0,0,8">
+                  <TextBlock Grid.Column="0" Classes="Caption" Text="{Binding Date, StringFormat={}{0:ddd dd MMM}}"/>
+                  <TextBlock Grid.Column="1" Classes="Body" Text="{Binding Title}"/>
+                  <TextBlock Grid.Column="2" Classes="Caption" Text="{Binding Trailing}"/>
+                </Grid>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+          <TextBlock Classes="Caption" Text="Nothing due this week."
+                     HorizontalAlignment="Center" VerticalAlignment="Center"
+                     IsVisible="{Binding !Agenda.Count}"/>
+        </Panel>
+      </Border>
+
+      <!-- pinned projects -->
+      <Border Grid.Column="1" Classes="card">
+        <StackPanel Spacing="8">
+          <TextBlock Classes="SectionHeading" Text="Active projects"/>
+          <ItemsControl ItemsSource="{Binding PinnedProjects}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <TextBlock Classes="Body" Margin="0,0,0,4" Text="{Binding Title}"/>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
         </StackPanel>
       </Border>
-      <Border Classes="card" Margin="0,0,12,12" MinWidth="180">
-        <StackPanel Spacing="4">
-          <TextBlock Classes="Caption" Text="Outstanding"/>
-          <TextBlock Text="{Binding OutstandingTotal, StringFormat={}{0:0.00}}" FontSize="28" FontWeight="Bold"
-                     Foreground="{DynamicResource TextPrimary}"/>
-        </StackPanel>
-      </Border>
-      <Border Classes="card" Margin="0,0,12,12" MinWidth="180">
-        <StackPanel Spacing="4">
-          <TextBlock Classes="Caption" Text="Overdue"/>
-          <TextBlock Text="{Binding OverdueCount}" FontSize="28" FontWeight="Bold"
-                     Foreground="{DynamicResource Danger}"/>
-        </StackPanel>
-      </Border>
-    </WrapPanel>
+    </Grid>
   </StackPanel>
 </UserControl>
