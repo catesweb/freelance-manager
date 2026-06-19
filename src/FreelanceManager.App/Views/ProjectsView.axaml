@@ -38,6 +38,7 @@
                   </DataTemplate>
                 </DataGridTemplateColumn.CellTemplate>
               </DataGridTemplateColumn>
+              <DataGridTextColumn Header="Due" Binding="{Binding DueDate, StringFormat={}{0:yyyy-MM-dd}}"/>
             </DataGrid.Columns>
           </DataGrid>
           <c:EmptyState Message="No projects yet"
