@@ -4,42 +4,42 @@
 
     <ResourceDictionary x:Key="Light">
       <SolidColorBrush x:Key="BgCanvas"      Color="#FFFFFF"/>
-      <SolidColorBrush x:Key="BgSurface"     Color="#F6F8FB"/>
-      <SolidColorBrush x:Key="BgSurfaceAlt"  Color="#EEF2F8"/>
-      <SolidColorBrush x:Key="Border"        Color="#E2E6EC"/>
-      <SolidColorBrush x:Key="TextPrimary"   Color="#1F2733"/>
-      <SolidColorBrush x:Key="TextMuted"     Color="#7C8896"/>
-      <SolidColorBrush x:Key="AccentPrimary" Color="#4F6BED"/>
-      <SolidColorBrush x:Key="AccentPrimaryHover" Color="#3A52C7"/>
-      <SolidColorBrush x:Key="AccentSubtle"  Color="#E3E8FB"/>
+      <SolidColorBrush x:Key="BgSurface"     Color="#FAFAF9"/>
+      <SolidColorBrush x:Key="BgSurfaceAlt"  Color="#F2F1EE"/>
+      <SolidColorBrush x:Key="Border"        Color="#E7E5E1"/>
+      <SolidColorBrush x:Key="TextPrimary"   Color="#20222A"/>
+      <SolidColorBrush x:Key="TextMuted"     Color="#80838C"/>
+      <SolidColorBrush x:Key="AccentPrimary" Color="#5E6AD2"/>
+      <SolidColorBrush x:Key="AccentPrimaryHover" Color="#4F5BC4"/>
+      <SolidColorBrush x:Key="AccentSubtle"  Color="#ECECF7"/>
       <SolidColorBrush x:Key="Success"       Color="#2E9E5B"/>
-      <SolidColorBrush x:Key="SuccessSubtle" Color="#E2F4E9"/>
-      <SolidColorBrush x:Key="Warning"       Color="#C98A00"/>
-      <SolidColorBrush x:Key="WarningSubtle" Color="#FBF0D6"/>
+      <SolidColorBrush x:Key="SuccessSubtle" Color="#E4F3EA"/>
+      <SolidColorBrush x:Key="Warning"       Color="#B07D14"/>
+      <SolidColorBrush x:Key="WarningSubtle" Color="#FBF3DE"/>
       <SolidColorBrush x:Key="Danger"        Color="#C0392B"/>
-      <SolidColorBrush x:Key="DangerSubtle"  Color="#FCE6E3"/>
-      <SolidColorBrush x:Key="Info"          Color="#5A6678"/>
-      <SolidColorBrush x:Key="InfoSubtle"    Color="#ECEFF3"/>
+      <SolidColorBrush x:Key="DangerSubtle"  Color="#FBE9E6"/>
+      <SolidColorBrush x:Key="Info"          Color="#80838C"/>
+      <SolidColorBrush x:Key="InfoSubtle"    Color="#EFEEEC"/>
     </ResourceDictionary>
 
     <ResourceDictionary x:Key="Dark">
-      <SolidColorBrush x:Key="BgCanvas"      Color="#161C25"/>
-      <SolidColorBrush x:Key="BgSurface"     Color="#1E2630"/>
-      <SolidColorBrush x:Key="BgSurfaceAlt"  Color="#232C38"/>
-      <SolidColorBrush x:Key="Border"        Color="#2A333F"/>
-      <SolidColorBrush x:Key="TextPrimary"   Color="#E6EBF2"/>
-      <SolidColorBrush x:Key="TextMuted"     Color="#9AA5B5"/>
-      <SolidColorBrush x:Key="AccentPrimary" Color="#6B83F0"/>
-      <SolidColorBrush x:Key="AccentPrimaryHover" Color="#8197F4"/>
-      <SolidColorBrush x:Key="AccentSubtle"  Color="#222C44"/>
+      <SolidColorBrush x:Key="BgCanvas"      Color="#15171C"/>
+      <SolidColorBrush x:Key="BgSurface"     Color="#1C1F26"/>
+      <SolidColorBrush x:Key="BgSurfaceAlt"  Color="#232730"/>
+      <SolidColorBrush x:Key="Border"        Color="#2C313B"/>
+      <SolidColorBrush x:Key="TextPrimary"   Color="#E7E9EE"/>
+      <SolidColorBrush x:Key="TextMuted"     Color="#969BA6"/>
+      <SolidColorBrush x:Key="AccentPrimary" Color="#7C8AE8"/>
+      <SolidColorBrush x:Key="AccentPrimaryHover" Color="#94A0EE"/>
+      <SolidColorBrush x:Key="AccentSubtle"  Color="#262B45"/>
       <SolidColorBrush x:Key="Success"       Color="#34D399"/>
-      <SolidColorBrush x:Key="SuccessSubtle" Color="#0F3D2E"/>
+      <SolidColorBrush x:Key="SuccessSubtle" Color="#11362A"/>
       <SolidColorBrush x:Key="Warning"       Color="#E0B341"/>
-      <SolidColorBrush x:Key="WarningSubtle" Color="#3A2F12"/>
+      <SolidColorBrush x:Key="WarningSubtle" Color="#332B12"/>
       <SolidColorBrush x:Key="Danger"        Color="#F87171"/>
       <SolidColorBrush x:Key="DangerSubtle"  Color="#3A1E1E"/>
-      <SolidColorBrush x:Key="Info"          Color="#5A6678"/>
-      <SolidColorBrush x:Key="InfoSubtle"    Color="#222B36"/>
+      <SolidColorBrush x:Key="Info"          Color="#969BA6"/>
+      <SolidColorBrush x:Key="InfoSubtle"    Color="#222630"/>
     </ResourceDictionary>
 
   </ResourceDictionary.ThemeDictionaries>
@@ -53,7 +53,7 @@
   <x:Double x:Key="Space8">32</x:Double>
 
   <CornerRadius x:Key="RadiusSm">6</CornerRadius>
-  <CornerRadius x:Key="RadiusMd">9</CornerRadius>
+  <CornerRadius x:Key="RadiusMd">8</CornerRadius>
   <CornerRadius x:Key="RadiusLg">12</CornerRadius>
 
   <Thickness x:Key="PagePadding">24</Thickness>
