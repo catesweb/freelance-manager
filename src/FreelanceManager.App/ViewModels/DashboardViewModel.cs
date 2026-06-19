@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using FreelanceManager.App.Services;
 using FreelanceManager.Core.Models;
@@ -17,25 +18,28 @@ public partial class DashboardViewModel : ViewModelBase
     [ObservableProperty] private int _overdueCount;
     [ObservableProperty] private decimal _outstandingTotal;
 
+    public ObservableCollection<AgendaItem> Agenda { get; } = new();
+    public ObservableCollection<Project> PinnedProjects { get; } = new();
+
     public DashboardViewModel(IProjectRepository projects, IInvoiceRepository invoices, IClock clock, INotificationService notes)
     {
         _projects = projects;
         _invoices = invoices;
         _clock = clock;
         _notes = notes;
-        _ = LoadAsync();
+        _ = RefreshAsync();
     }
 
-    private async Task LoadAsync()
+    public async Task RefreshAsync()
     {
         try
         {
-            var projects = await _projects.GetAllAsync();
+            var projects = (await _projects.GetAllAsync()).ToList();
+            var invoices = (await _invoices.GetAllAsync()).ToList();
+
             ActiveProjects = projects.Count(p => p.Status == ProjectStatus.Active);
 
-            var invoices = await _invoices.GetAllAsync();
-            decimal outstanding = 0m;
-            int overdue = 0;
+            decimal outstanding = 0m; int overdue = 0;
             foreach (var i in invoices)
             {
                 var eff = OverduePolicy.EffectiveStatus(i, _clock.Today);
@@ -45,6 +49,15 @@ public partial class DashboardViewModel : ViewModelBase
             }
             OverdueCount = overdue;
             OutstandingTotal = outstanding;
+
+            Agenda.Clear();
+            foreach (var item in AgendaBuilder.BuildWeek(projects, invoices, _clock.Today))
+                Agenda.Add(item);
+
+            PinnedProjects.Clear();
+            foreach (var p in projects.Where(p => p.Status == ProjectStatus.Active)
+                                      .OrderByDescending(p => p.CreatedAt).Take(5))
+                PinnedProjects.Add(p);
         }
         catch (System.Exception ex)
         {
