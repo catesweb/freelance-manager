@@ -41,6 +41,11 @@ public partial class InvoicesViewModel : ViewModelBase
         OnPropertyChanged(nameof(IsNotEditing));
     }
 
+    partial void OnSelectedChanged(InvoiceRow? value)
+    {
+        if (value is not null) _ = Edit();
+    }
+
     public InvoicesViewModel(
         IInvoiceRepository invoices, IClientRepository clients, IProjectRepository projects,
         IInvoiceNumberGenerator numbers, IBusinessProfileRepository profiles,
@@ -76,6 +81,7 @@ public partial class InvoicesViewModel : ViewModelBase
     [RelayCommand]
     private async Task New()
     {
+        Selected = null;
         var profile = await _profiles.GetAsync();
         int year = _clock.Today.Year;
         int lastSeq = await _invoices.GetMaxSequenceForYearAsync(year);
@@ -92,7 +98,6 @@ public partial class InvoicesViewModel : ViewModelBase
         EditorClient = null;
     }
 
-    [RelayCommand]
     private async Task Edit()
     {
         if (Selected is null) return;
@@ -120,6 +125,7 @@ public partial class InvoicesViewModel : ViewModelBase
             else await _invoices.UpdateAsync(model);
 
             Editor = null;
+            Selected = null;
             _notes.Show("Invoice saved.", NotificationKind.Success);
             await LoadAsync();
         }
@@ -129,7 +135,11 @@ public partial class InvoicesViewModel : ViewModelBase
         }
     }
 
-    [RelayCommand] private void Cancel() => Editor = null;
+    [RelayCommand] private void Cancel()
+    {
+        Editor = null;
+        Selected = null;
+    }
 
     [RelayCommand]
     private async Task SetStatus(InvoiceStatus status)
@@ -160,6 +170,8 @@ public partial class InvoicesViewModel : ViewModelBase
         try
         {
             await _invoices.DeleteAsync(Selected.Id);
+            Editor = null;
+            Selected = null;
             await LoadAsync();
             _notes.Show("Invoice deleted.", NotificationKind.Success);
         }

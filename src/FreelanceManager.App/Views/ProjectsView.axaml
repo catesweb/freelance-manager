@@ -6,49 +6,55 @@
              xmlns:models="using:FreelanceManager.Core.Models"
              x:Class="FreelanceManager.App.Views.ProjectsView"
              x:DataType="vm:ProjectsViewModel">
-  <Panel>
-    <Grid RowDefinitions="Auto,*" IsVisible="{Binding IsNotEditing}">
-      <c:PageHeader Grid.Row="0" Title="Projects">
-        <c:PageHeader.Actions>
-          <StackPanel Orientation="Horizontal" Spacing="8">
-            <Button Classes="primary" Content="New" Command="{Binding NewCommand}"/>
-            <Button Classes="secondary" Content="Edit" Command="{Binding EditCommand}"/>
-            <Button Classes="danger" Content="Delete" Command="{Binding DeleteCommand}"/>
-          </StackPanel>
-        </c:PageHeader.Actions>
-      </c:PageHeader>
-      <Panel Grid.Row="1">
-        <DataGrid ItemsSource="{Binding Projects}" SelectedItem="{Binding Selected}"
-                  IsReadOnly="True" AutoGenerateColumns="False">
-          <DataGrid.Columns>
-            <DataGridTextColumn Header="Title" Binding="{Binding Title}"/>
-            <DataGridTextColumn Header="Client" Binding="{Binding Client.Name}"/>
-            <DataGridTemplateColumn Header="Status">
-              <DataGridTemplateColumn.CellTemplate>
-                <DataTemplate>
-                  <Button HorizontalAlignment="Center" Padding="0" Background="Transparent"
-                          BorderThickness="0" Cursor="Hand">
-                    <c:StatusBadge Status="{Binding Status}"/>
-                    <Button.Flyout>
-                      <MenuFlyout>
-                        <MenuItem Header="Lead" Tag="{x:Static models:ProjectStatus.Lead}" Click="OnSetProjectStatus"/>
-                        <MenuItem Header="Active" Tag="{x:Static models:ProjectStatus.Active}" Click="OnSetProjectStatus"/>
-                        <MenuItem Header="Complete" Tag="{x:Static models:ProjectStatus.Complete}" Click="OnSetProjectStatus"/>
-                        <MenuItem Header="Archived" Tag="{x:Static models:ProjectStatus.Archived}" Click="OnSetProjectStatus"/>
-                      </MenuFlyout>
-                    </Button.Flyout>
-                  </Button>
-                </DataTemplate>
-              </DataGridTemplateColumn.CellTemplate>
-            </DataGridTemplateColumn>
-            <DataGridTextColumn Header="Due" Binding="{Binding DueDate, StringFormat={}{0:yyyy-MM-dd}}"/>
-          </DataGrid.Columns>
-        </DataGrid>
-        <c:EmptyState Message="No projects yet" Hint="Click New to create one."
-                      IsVisible="{Binding IsEmpty}"/>
+  <Grid RowDefinitions="Auto,*">
+    <c:PageHeader Grid.Row="0" Title="Projects">
+      <c:PageHeader.Actions>
+        <Button Classes="primary" Content="New" Command="{Binding NewCommand}"/>
+      </c:PageHeader.Actions>
+    </c:PageHeader>
+
+    <Grid Grid.Row="1" ColumnDefinitions="360,*">
+      <Border Grid.Column="0" BorderBrush="{DynamicResource Border}" BorderThickness="0,0,1,0" Margin="0,0,16,0">
+        <Panel>
+          <DataGrid ItemsSource="{Binding Projects}" SelectedItem="{Binding Selected}"
+                    IsReadOnly="True" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="Title" Binding="{Binding Title}"/>
+              <DataGridTemplateColumn Header="Status">
+                <DataGridTemplateColumn.CellTemplate>
+                  <DataTemplate>
+                    <Button HorizontalAlignment="Center" Padding="0" Background="Transparent"
+                            BorderThickness="0" Cursor="Hand">
+                      <c:StatusBadge Status="{Binding Status}"/>
+                      <Button.Flyout>
+                        <MenuFlyout>
+                          <MenuItem Header="Lead" Tag="{x:Static models:ProjectStatus.Lead}" Click="OnSetProjectStatus"/>
+                          <MenuItem Header="Active" Tag="{x:Static models:ProjectStatus.Active}" Click="OnSetProjectStatus"/>
+                          <MenuItem Header="Complete" Tag="{x:Static models:ProjectStatus.Complete}" Click="OnSetProjectStatus"/>
+                          <MenuItem Header="Archived" Tag="{x:Static models:ProjectStatus.Archived}" Click="OnSetProjectStatus"/>
+                        </MenuFlyout>
+                      </Button.Flyout>
+                    </Button>
+                  </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+              </DataGridTemplateColumn>
+              <DataGridTextColumn Header="Due" Binding="{Binding DueDate, StringFormat={}{0:yyyy-MM-dd}}"/>
+            </DataGrid.Columns>
+          </DataGrid>
+          <c:EmptyState Message="No projects yet"
+                        Hint="Create a project to track handover details and deadlines."
+                        Icon="{DynamicResource IconProjects}"
+                        ActionText="New project" Command="{Binding NewCommand}"
+                        IsVisible="{Binding IsEmpty}"/>
+        </Panel>
+      </Border>
+
+      <Panel Grid.Column="1">
+        <views:ProjectEditView IsVisible="{Binding IsEditing}"/>
+        <TextBlock Classes="Caption" Text="Select a project, or click New."
+                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                   IsVisible="{Binding IsNotEditing}"/>
       </Panel>
     </Grid>
-
-    <views:ProjectEditView IsVisible="{Binding IsEditing}"/>
-  </Panel>
+  </Grid>
 </UserControl>

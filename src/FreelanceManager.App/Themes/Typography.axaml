@@ -23,4 +23,9 @@
     <Setter Property="Foreground" Value="{DynamicResource TextMuted}"/>
     <Setter Property="Margin" Value="0,0,0,2"/>
   </Style>
+  <Style Selector="TextBlock.Metric">
+    <Setter Property="FontWeight" Value="Bold"/>
+    <Setter Property="FontFeatures" Value="+tnum"/>
+    <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+  </Style>
 </Styles>

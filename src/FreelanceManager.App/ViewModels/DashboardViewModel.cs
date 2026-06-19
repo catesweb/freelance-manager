@@ -1,4 +1,6 @@
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using FreelanceManager.App.Services;
 using FreelanceManager.Core.Models;
 using FreelanceManager.Core.Services;
@@ -12,30 +14,58 @@ public partial class DashboardViewModel : ViewModelBase
     private readonly IInvoiceRepository _invoices;
     private readonly IClock _clock;
     private readonly INotificationService _notes;
+    private readonly IAppStateService _appState;
+    private readonly IBusinessProfileRepository _profiles;
+    private readonly IClientRepository _clients;
 
     [ObservableProperty] private int _activeProjects;
     [ObservableProperty] private int _overdueCount;
     [ObservableProperty] private decimal _outstandingTotal;
 
-    public DashboardViewModel(IProjectRepository projects, IInvoiceRepository invoices, IClock clock, INotificationService notes)
+    [ObservableProperty] private bool _showOnboarding;
+    [ObservableProperty] private bool _stepProfileDone;
+    [ObservableProperty] private bool _stepClientDone;
+    [ObservableProperty] private bool _stepInvoiceDone;
+
+    public ObservableCollection<AgendaItem> Agenda { get; } = new();
+    public ObservableCollection<Project> PinnedProjects { get; } = new();
+
+    public DashboardViewModel(
+        IProjectRepository projects,
+        IInvoiceRepository invoices,
+        IClock clock,
+        INotificationService notes,
+        IAppStateService appState,
+        IBusinessProfileRepository profiles,
+        IClientRepository clients)
     {
         _projects = projects;
         _invoices = invoices;
         _clock = clock;
         _notes = notes;
-        _ = LoadAsync();
+        _appState = appState;
+        _profiles = profiles;
+        _clients = clients;
+        _ = RefreshAsync();
     }
 
-    private async Task LoadAsync()
+    [RelayCommand]
+    private void DismissOnboarding()
+    {
+        _appState.DismissOnboarding();
+        ShowOnboarding = false;
+    }
+
+    public async Task RefreshAsync()
     {
         try
         {
-            var projects = await _projects.GetAllAsync();
+            var projects = (await _projects.GetAllAsync()).ToList();
+            var invoices = (await _invoices.GetAllAsync()).ToList();
+
             ActiveProjects = projects.Count(p => p.Status == ProjectStatus.Active);
 
-            var invoices = await _invoices.GetAllAsync();
-            decimal outstanding = 0m;
-            int overdue = 0;
+            decimal outstanding = 0m; int overdue = 0;
             foreach (var i in invoices)
             {
                 var eff = OverduePolicy.EffectiveStatus(i, _clock.Today);
@@ -45,6 +75,23 @@ public partial class DashboardViewModel : ViewModelBase
             }
             OverdueCount = overdue;
             OutstandingTotal = outstanding;
+
+            Agenda.Clear();
+            foreach (var item in AgendaBuilder.BuildWeek(projects, invoices, _clock.Today))
+                Agenda.Add(item);
+
+            PinnedProjects.Clear();
+            foreach (var p in projects.Where(p => p.Status == ProjectStatus.Active)
+                                      .OrderByDescending(p => p.CreatedAt).Take(5))
+                PinnedProjects.Add(p);
+
+            // onboarding step completion
+            var profile = await _profiles.GetAsync();
+            StepProfileDone = !string.IsNullOrWhiteSpace(profile.Name);
+            StepClientDone  = (await _clients.GetAllAsync()).Any();
+            StepInvoiceDone = invoices.Count > 0;
+            ShowOnboarding  = !_appState.OnboardingDismissed
+                              && !(StepProfileDone && StepClientDone && StepInvoiceDone);
         }
         catch (System.Exception ex)
         {
