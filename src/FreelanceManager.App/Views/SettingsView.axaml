@@ -68,6 +68,14 @@
           </StackPanel>
         </StackPanel>
       </Border>
+
+      <Border Classes="card">
+        <StackPanel Spacing="10">
+          <TextBlock Classes="SectionHeading" Text="Updates"/>
+          <TextBlock Classes="FieldLabel" Text="{Binding AppVersion, StringFormat='Current version: {0}'}"/>
+          <Button Classes="secondary" Content="Check for updates" Command="{Binding CheckForUpdatesCommand}"/>
+        </StackPanel>
+      </Border>
     </StackPanel>
   </ScrollViewer>
 </UserControl>

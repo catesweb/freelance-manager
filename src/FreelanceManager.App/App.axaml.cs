@@ -36,6 +36,9 @@ public partial class App : Application
         // ThemeVariant.Default already follows the OS, so the brief window before this
         // completes shows the system variant rather than a wrong one.
         _ = ApplySavedThemeAsync();
+
+        // Silent background check; notifies only if an update is waiting.
+        _ = Services.GetRequiredService<IUpdateService>().CheckOnStartupAsync();
     }
 
     // Lato (QuestPDF's default font) is embedded as a resource rather than shipped as
