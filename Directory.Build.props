@@ -4,7 +4,7 @@
        To cut a release, bump the version here (one line) and push to master;
        release.yml builds the release and creates the matching tag. -->
   <PropertyGroup>
-    <VersionPrefix>0.2.2</VersionPrefix>
+    <VersionPrefix>0.3.0</VersionPrefix>
     <AssemblyVersion>$(VersionPrefix).0</AssemblyVersion>
     <FileVersion>$(VersionPrefix).0</FileVersion>
   </PropertyGroup>
