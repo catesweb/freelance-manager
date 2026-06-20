@@ -8,7 +8,10 @@
   <Grid RowDefinitions="Auto,*">
     <c:PageHeader Grid.Row="0" Title="Clients">
       <c:PageHeader.Actions>
-        <Button Classes="primary" Content="New" Command="{Binding NewCommand}"/>
+        <StackPanel Orientation="Horizontal" Spacing="8">
+          <TextBox Width="220" PlaceholderText="Search clients…" Text="{Binding SearchText}"/>
+          <Button Classes="primary" Content="New" Command="{Binding NewCommand}"/>
+        </StackPanel>
       </c:PageHeader.Actions>
     </c:PageHeader>
 
@@ -19,8 +22,8 @@
       </Grid.ColumnDefinitions>
       <!-- list -->
       <Panel Grid.Column="0">
-          <DataGrid ItemsSource="{Binding Clients}" SelectedItem="{Binding Selected}"
-                    IsReadOnly="True" AutoGenerateColumns="False">
+          <DataGrid ItemsSource="{Binding ClientsView}" SelectedItem="{Binding Selected}"
+                    IsReadOnly="True" AutoGenerateColumns="False" x:CompileBindings="False">
             <DataGrid.Columns>
               <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
               <DataGridTextColumn Header="Company" Binding="{Binding Company}"/>

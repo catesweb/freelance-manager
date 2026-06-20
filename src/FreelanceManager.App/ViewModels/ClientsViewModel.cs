@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using Avalonia.Collections;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FreelanceManager.App.Services;
@@ -15,6 +16,11 @@ public partial class ClientsViewModel : ViewModelBase
     private readonly INotificationService _notes;
 
     public ObservableCollection<Client> Clients { get; } = new();
+
+    /// <summary>Filterable, sortable view over <see cref="Clients"/> bound by the DataGrid.</summary>
+    public DataGridCollectionView ClientsView { get; }
+
+    [ObservableProperty] private string _searchText = string.Empty;
 
     [ObservableProperty] private Client? _selected;
     [ObservableProperty] private ClientEditViewModel? _editor;
@@ -39,8 +45,21 @@ public partial class ClientsViewModel : ViewModelBase
         _repo = repo;
         _dialogs = dialogs;
         _notes = notes;
+        ClientsView = new DataGridCollectionView(Clients) { Filter = MatchesSearch };
         _ = LoadAsync();
     }
+
+    partial void OnSearchTextChanged(string value) => ClientsView.Refresh();
+
+    private bool MatchesSearch(object item)
+    {
+        if (string.IsNullOrWhiteSpace(SearchText)) return true;
+        if (item is not Client c) return false;
+        return Contains(c.Name) || Contains(c.Company) || Contains(c.Email);
+    }
+
+    private bool Contains(string? field)
+        => field?.Contains(SearchText, System.StringComparison.OrdinalIgnoreCase) == true;
 
     private async Task LoadAsync()
     {

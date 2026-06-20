@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using Avalonia.Collections;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FreelanceManager.App.Services;
@@ -26,6 +27,11 @@ public partial class InvoicesViewModel : ViewModelBase
     public ObservableCollection<InvoiceRow> Invoices { get; } = new();
     public ObservableCollection<Client> ClientOptions { get; } = new();
     public ObservableCollection<Project> ProjectOptions { get; } = new();
+
+    /// <summary>Filterable, sortable view over <see cref="Invoices"/> bound by the DataGrid.</summary>
+    public DataGridCollectionView InvoicesView { get; }
+
+    [ObservableProperty] private string _searchText = string.Empty;
 
     [ObservableProperty] private InvoiceRow? _selected;
     [ObservableProperty] private InvoiceEditViewModel? _editor;
@@ -55,8 +61,21 @@ public partial class InvoicesViewModel : ViewModelBase
         _invoices = invoices; _clients = clients; _projects = projects;
         _numbers = numbers; _profiles = profiles; _pdf = pdf; _clock = clock;
         _dialogs = dialogs; _notes = notes;
+        InvoicesView = new DataGridCollectionView(Invoices) { Filter = MatchesSearch };
         _ = LoadAsync();
     }
+
+    partial void OnSearchTextChanged(string value) => InvoicesView.Refresh();
+
+    private bool MatchesSearch(object item)
+    {
+        if (string.IsNullOrWhiteSpace(SearchText)) return true;
+        if (item is not InvoiceRow row) return false;
+        return Contains(row.Number) || Contains(row.ClientName);
+    }
+
+    private bool Contains(string? field)
+        => field?.Contains(SearchText, System.StringComparison.OrdinalIgnoreCase) == true;
 
     private async Task LoadAsync()
     {

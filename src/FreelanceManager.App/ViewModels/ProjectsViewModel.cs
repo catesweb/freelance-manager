@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using Avalonia.Collections;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FreelanceManager.Core.Models;
@@ -16,6 +17,11 @@ public partial class ProjectsViewModel : ViewModelBase
 
     public ObservableCollection<Project> Projects { get; } = new();
     public ObservableCollection<Client> ClientOptions { get; } = new();
+
+    /// <summary>Filterable, sortable view over <see cref="Projects"/> bound by the DataGrid.</summary>
+    public DataGridCollectionView ProjectsView { get; }
+
+    [ObservableProperty] private string _searchText = string.Empty;
 
     [ObservableProperty] private Project? _selected;
     [ObservableProperty] private ProjectEditViewModel? _editor;
@@ -42,8 +48,22 @@ public partial class ProjectsViewModel : ViewModelBase
         _clients = clients;
         _dialogs = dialogs;
         _notes = notes;
+        ProjectsView = new DataGridCollectionView(Projects) { Filter = MatchesSearch };
         _ = LoadAsync();
     }
+
+    partial void OnSearchTextChanged(string value) => ProjectsView.Refresh();
+
+    private bool MatchesSearch(object item)
+    {
+        if (string.IsNullOrWhiteSpace(SearchText)) return true;
+        if (item is not Project p) return false;
+        var clientName = ClientOptions.FirstOrDefault(c => c.Id == p.ClientId)?.Name;
+        return Contains(p.Title) || Contains(clientName);
+    }
+
+    private bool Contains(string? field)
+        => field?.Contains(SearchText, System.StringComparison.OrdinalIgnoreCase) == true;
 
     private async Task LoadAsync()
     {

@@ -9,7 +9,10 @@
   <Grid RowDefinitions="Auto,*">
     <c:PageHeader Grid.Row="0" Title="Projects">
       <c:PageHeader.Actions>
-        <Button Classes="primary" Content="New" Command="{Binding NewCommand}"/>
+        <StackPanel Orientation="Horizontal" Spacing="8">
+          <TextBox Width="220" PlaceholderText="Search projects…" Text="{Binding SearchText}"/>
+          <Button Classes="primary" Content="New" Command="{Binding NewCommand}"/>
+        </StackPanel>
       </c:PageHeader.Actions>
     </c:PageHeader>
 
@@ -19,11 +22,11 @@
         <ColumnDefinition Width="{Binding IsEditing, Converter={StaticResource BoolToGridLength}, ConverterParameter='*|0'}"/>
       </Grid.ColumnDefinitions>
       <Panel Grid.Column="0">
-          <DataGrid ItemsSource="{Binding Projects}" SelectedItem="{Binding Selected}"
-                    IsReadOnly="True" AutoGenerateColumns="False">
+          <DataGrid ItemsSource="{Binding ProjectsView}" SelectedItem="{Binding Selected}"
+                    IsReadOnly="True" AutoGenerateColumns="False" x:CompileBindings="False">
             <DataGrid.Columns>
               <DataGridTextColumn Header="Title" Binding="{Binding Title}"/>
-              <DataGridTemplateColumn Header="Status">
+              <DataGridTemplateColumn Header="Status" SortMemberPath="Status">
                 <DataGridTemplateColumn.CellTemplate>
                   <DataTemplate>
                     <Button HorizontalAlignment="Center" Padding="0" Background="Transparent"
