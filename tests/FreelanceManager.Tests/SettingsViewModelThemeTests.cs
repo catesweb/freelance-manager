@@ -40,12 +40,20 @@ public class SettingsViewModelThemeTests
         public Task CheckAndInstallAsync() => Task.CompletedTask;
     }
 
+    private sealed class FakeEmail : IEmailSender
+    {
+        public bool IsConfigured(BusinessProfile profile) => true;
+        public Task TestConnectionAsync(BusinessProfile profile, string? plainPassword) => Task.CompletedTask;
+        public Task SendAsync(BusinessProfile profile, string toEmail, string? toName,
+                              string subject, string body, string attachmentPath) => Task.CompletedTask;
+    }
+
     [Fact]
     public async Task Save_persists_and_applies_selected_theme()
     {
         var profiles = new FakeProfiles();
         var theme = new FakeTheme();
-        var vm = new SettingsViewModel(profiles, new FakeBackup(), theme, new FakeNotes(), new FakeUpdates());
+        var vm = new SettingsViewModel(profiles, new FakeBackup(), theme, new FakeNotes(), new FakeUpdates(), new FakeEmail());
         await Task.Delay(50); // allow LoadAsync to complete
 
         vm.Theme = ThemeMode.Dark;

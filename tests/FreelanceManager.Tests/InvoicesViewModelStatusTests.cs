@@ -70,6 +70,7 @@ public class InvoicesViewModelStatusTests
     private sealed class FakeEmail : IEmailSender
     {
         public bool IsConfigured(BusinessProfile profile) => true;
+        public Task TestConnectionAsync(BusinessProfile profile, string? plainPassword) => Task.CompletedTask;
         public Task SendAsync(BusinessProfile profile, string toEmail, string? toName,
                               string subject, string body, string attachmentPath) => Task.CompletedTask;
     }

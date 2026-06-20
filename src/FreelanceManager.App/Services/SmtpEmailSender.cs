@@ -30,18 +30,33 @@ public class SmtpEmailSender : IEmailSender
         builder.Attachments.Add(attachmentPath);
         msg.Body = builder.ToMessageBody();
 
-        using var client = new SmtpClient();
+        using var client = await ConnectAsync(profile, null);
+        await client.SendAsync(msg);
+        await client.DisconnectAsync(true);
+    }
+
+    public async Task TestConnectionAsync(BusinessProfile profile, string? plainPassword)
+    {
+        if (!IsConfigured(profile))
+            throw new InvalidOperationException("Enter at least an SMTP host and a from-address.");
+        using var client = await ConnectAsync(profile, plainPassword);
+        await client.DisconnectAsync(true);
+    }
+
+    private static async Task<SmtpClient> ConnectAsync(BusinessProfile profile, string? plainPassword)
+    {
+        var client = new SmtpClient();
         var security = profile.SmtpUseSsl ? SecureSocketOptions.Auto : SecureSocketOptions.None;
         await client.ConnectAsync(profile.SmtpHost!, profile.SmtpPort, security);
 
         if (!string.IsNullOrWhiteSpace(profile.SmtpUsername))
         {
-            var password = Dpapi.Decrypt(profile.SmtpPasswordEncrypted) ?? string.Empty;
+            var password = !string.IsNullOrEmpty(plainPassword)
+                ? plainPassword
+                : Dpapi.Decrypt(profile.SmtpPasswordEncrypted) ?? string.Empty;
             await client.AuthenticateAsync(profile.SmtpUsername, password);
         }
-
-        await client.SendAsync(msg);
-        await client.DisconnectAsync(true);
+        return client;
     }
 
     private static string? FromEmail(BusinessProfile p) =>

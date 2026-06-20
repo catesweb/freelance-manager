@@ -90,6 +90,7 @@
             <TextBlock Classes="FieldLabel" Text="From name (defaults to business name)"/>
             <TextBox Text="{Binding SmtpFromName}"/>
           </StackPanel>
+          <Button Classes="secondary" Content="Test connection" Command="{Binding TestSmtpCommand}" HorizontalAlignment="Left"/>
         </StackPanel>
       </Border>
 

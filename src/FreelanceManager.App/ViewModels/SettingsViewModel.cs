@@ -14,6 +14,7 @@ public partial class SettingsViewModel : ViewModelBase
     private readonly IThemeService _themeService;
     private readonly INotificationService _notes;
     private readonly IUpdateService _updates;
+    private readonly IEmailSender _emailSender;
     private BusinessProfile _model = new();
 
     [ObservableProperty] private string _name = string.Empty;
@@ -38,14 +39,38 @@ public partial class SettingsViewModel : ViewModelBase
 
     public string AppVersion => _updates.CurrentVersion;
 
-    public SettingsViewModel(IBusinessProfileRepository profiles, IBackupService backup, IThemeService themeService, INotificationService notes, IUpdateService updates)
+    public SettingsViewModel(IBusinessProfileRepository profiles, IBackupService backup, IThemeService themeService, INotificationService notes, IUpdateService updates, IEmailSender email)
     {
         _profiles = profiles;
         _backup = backup;
         _themeService = themeService;
         _notes = notes;
         _updates = updates;
+        _emailSender = email;
         _ = LoadAsync();
+    }
+
+    [RelayCommand]
+    private async Task TestSmtp()
+    {
+        var probe = new BusinessProfile
+        {
+            Name = Name, Email = Email,
+            SmtpHost = SmtpHost, SmtpPort = SmtpPort,
+            SmtpUsername = SmtpUsername,
+            SmtpPasswordEncrypted = _model.SmtpPasswordEncrypted,
+            SmtpUseSsl = SmtpUseSsl,
+            SmtpFromEmail = SmtpFromEmail, SmtpFromName = SmtpFromName
+        };
+        try
+        {
+            await _emailSender.TestConnectionAsync(probe, SmtpPassword);
+            _notes.Show("SMTP connection succeeded.", NotificationKind.Success);
+        }
+        catch (System.Exception ex)
+        {
+            _notes.Show($"SMTP test failed: {ex.Message}", NotificationKind.Error);
+        }
     }
 
     [RelayCommand]
