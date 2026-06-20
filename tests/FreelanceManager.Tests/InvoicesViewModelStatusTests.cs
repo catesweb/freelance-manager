@@ -56,6 +56,24 @@ public class InvoicesViewModelStatusTests
         public void ExportInvoice(Invoice invoice, BusinessProfile profile, string outputPath) { }
     }
 
+    private sealed class FakePayments : IPaymentRepository
+    {
+        public readonly List<Payment> Store = new();
+        public Task<List<Payment>> GetForInvoiceAsync(int invoiceId) =>
+            Task.FromResult(Store.Where(p => p.InvoiceId == invoiceId).ToList());
+        public Task<decimal> GetTotalPaidAsync(int invoiceId) =>
+            Task.FromResult(Store.Where(p => p.InvoiceId == invoiceId).Sum(p => p.Amount));
+        public Task AddAsync(Payment p) { p.Id = Store.Count + 1; Store.Add(p); return Task.CompletedTask; }
+        public Task DeleteAsync(int id) { Store.RemoveAll(p => p.Id == id); return Task.CompletedTask; }
+    }
+
+    private sealed class FakeEmail : IEmailSender
+    {
+        public bool IsConfigured(BusinessProfile profile) => true;
+        public Task SendAsync(BusinessProfile profile, string toEmail, string? toName,
+                              string subject, string body, string attachmentPath) => Task.CompletedTask;
+    }
+
     private sealed class FixedClock : IClock { public DateTime Today { get; init; } }
 
     private sealed class FakeDialogs : IDialogService
@@ -69,10 +87,10 @@ public class InvoicesViewModelStatusTests
         public void Show(string message, NotificationKind kind = NotificationKind.Info) { }
     }
 
-    private static InvoicesViewModel CreateVm(FakeInvoiceRepo invoices)
+    private static InvoicesViewModel CreateVm(FakeInvoiceRepo invoices, IPaymentRepository? payments = null)
         => new(invoices, new FakeClientRepo(), new FakeProjectRepo(), new InvoiceNumberGenerator(),
-               new FakeProfiles(), new FakePdf(), new FixedClock { Today = Today },
-               new FakeDialogs(), new FakeNotes());
+               new FakeProfiles(), new FakePdf(), payments ?? new FakePayments(), new FakeEmail(),
+               new FixedClock { Today = Today }, new FakeDialogs(), new FakeNotes());
 
     [Fact]
     public async Task SetStatus_marks_paid_and_clears_overdue()
@@ -100,6 +118,46 @@ public class InvoicesViewModelStatusTests
 
         Assert.Equal(InvoiceStatus.Sent, (await repo.GetAsync(1))!.Status);
         Assert.Equal(InvoiceStatus.Overdue, vm.Invoices.Single(r => r.Id == 1).Status);
+    }
+
+    [Fact]
+    public async Task RecordPayment_marks_invoice_paid_when_balance_cleared()
+    {
+        var repo = new FakeInvoiceRepo();
+        var inv = new Invoice
+        {
+            Id = 1, Number = "INV-1", Status = InvoiceStatus.Sent,
+            LineItems = { new InvoiceLineItem { Quantity = 1, UnitPrice = 100m } }
+        };
+        repo.Store.Add(inv);
+        var payments = new FakePayments();
+        var vm = CreateVm(repo, payments);
+        vm.Selected = new InvoiceRow(inv, InvoiceStatus.Sent);   // fakes complete sync → Editor is set
+        vm.NewPaymentAmount = 100m;
+
+        await vm.RecordPaymentCommand.ExecuteAsync(null);
+
+        Assert.Single(payments.Store);
+        Assert.Equal(InvoiceStatus.Paid, (await repo.GetAsync(1))!.Status);
+    }
+
+    [Fact]
+    public async Task RecordPayment_leaves_status_when_partial()
+    {
+        var repo = new FakeInvoiceRepo();
+        var inv = new Invoice
+        {
+            Id = 1, Number = "INV-1", Status = InvoiceStatus.Sent,
+            LineItems = { new InvoiceLineItem { Quantity = 1, UnitPrice = 100m } }
+        };
+        repo.Store.Add(inv);
+        var vm = CreateVm(repo, new FakePayments());
+        vm.Selected = new InvoiceRow(inv, InvoiceStatus.Sent);
+        vm.NewPaymentAmount = 40m;
+
+        await vm.RecordPaymentCommand.ExecuteAsync(null);
+
+        Assert.Equal(InvoiceStatus.Sent, (await repo.GetAsync(1))!.Status);
     }
 
     [Fact]

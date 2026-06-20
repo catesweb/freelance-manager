@@ -22,6 +22,7 @@ public static class ServiceConfiguration
         services.AddSingleton<IInvoiceNumberGenerator, InvoiceNumberGenerator>();
         services.AddSingleton<IBackupService, BackupService>();
         services.AddSingleton<IPdfExporter, QuestPdfInvoiceExporter>();
+        services.AddSingleton<IEmailSender, SmtpEmailSender>();
         services.AddSingleton<IThemeService, ThemeService>();
         services.AddSingleton<IUpdateService, UpdateService>();
         services.AddSingleton<IDialogService, DialogService>();
@@ -34,6 +35,7 @@ public static class ServiceConfiguration
         services.AddTransient<IProjectRepository, ProjectRepository>();
         services.AddTransient<IInvoiceRepository, InvoiceRepository>();
         services.AddTransient<IBusinessProfileRepository, BusinessProfileRepository>();
+        services.AddTransient<IPaymentRepository, PaymentRepository>();
 
         services.AddTransient<DashboardViewModel>();
         services.AddTransient<ClientsViewModel>();

@@ -26,6 +26,14 @@ public partial class SettingsViewModel : ViewModelBase
     [ObservableProperty] private string _invoiceNumberFormat = "INV-{YYYY}-{0000}";
     [ObservableProperty] private ThemeMode _theme;
 
+    [ObservableProperty] private string? _smtpHost;
+    [ObservableProperty] private int _smtpPort = 587;
+    [ObservableProperty] private string? _smtpUsername;
+    [ObservableProperty] private string _smtpPassword = string.Empty;   // entry only; blank keeps existing
+    [ObservableProperty] private bool _smtpUseSsl = true;
+    [ObservableProperty] private string? _smtpFromEmail;
+    [ObservableProperty] private string? _smtpFromName;
+
     public static ThemeMode[] ThemeOptions { get; } = System.Enum.GetValues<ThemeMode>();
 
     public string AppVersion => _updates.CurrentVersion;
@@ -57,6 +65,12 @@ public partial class SettingsViewModel : ViewModelBase
             DefaultTaxRate = _model.DefaultTaxRate;
             InvoiceNumberFormat = _model.InvoiceNumberFormat;
             Theme = _model.Theme;
+            SmtpHost = _model.SmtpHost;
+            SmtpPort = _model.SmtpPort;
+            SmtpUsername = _model.SmtpUsername;
+            SmtpUseSsl = _model.SmtpUseSsl;
+            SmtpFromEmail = _model.SmtpFromEmail;
+            SmtpFromName = _model.SmtpFromName;
         }
         catch (System.Exception ex)
         {
@@ -76,6 +90,17 @@ public partial class SettingsViewModel : ViewModelBase
         _model.DefaultTaxRate = DefaultTaxRate;
         _model.InvoiceNumberFormat = InvoiceNumberFormat;
         _model.Theme = Theme;
+        _model.SmtpHost = SmtpHost;
+        _model.SmtpPort = SmtpPort;
+        _model.SmtpUsername = SmtpUsername;
+        _model.SmtpUseSsl = SmtpUseSsl;
+        _model.SmtpFromEmail = SmtpFromEmail;
+        _model.SmtpFromName = SmtpFromName;
+        if (!string.IsNullOrEmpty(SmtpPassword))   // blank = keep existing encrypted password
+        {
+            _model.SmtpPasswordEncrypted = Dpapi.Encrypt(SmtpPassword);
+            SmtpPassword = string.Empty;
+        }
         await _profiles.SaveAsync(_model);
         _themeService.Apply(Theme);
         _notes.Show("Settings saved.", NotificationKind.Success);

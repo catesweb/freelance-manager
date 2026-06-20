@@ -11,6 +11,7 @@ public class AppDbContext : DbContext
     public DbSet<Project> Projects => Set<Project>();
     public DbSet<Invoice> Invoices => Set<Invoice>();
     public DbSet<InvoiceLineItem> InvoiceLineItems => Set<InvoiceLineItem>();
+    public DbSet<Payment> Payments => Set<Payment>();
     public DbSet<BusinessProfile> BusinessProfiles => Set<BusinessProfile>();
 
     protected override void OnModelCreating(ModelBuilder b)
@@ -41,6 +42,13 @@ public class AppDbContext : DbContext
             e.Ignore(li => li.LineTotal);   // computed, not persisted
             e.Property(li => li.Quantity).HasPrecision(18, 4);
             e.Property(li => li.UnitPrice).HasPrecision(18, 4);
+        });
+
+        b.Entity<Payment>(e =>
+        {
+            e.Property(p => p.Amount).HasPrecision(18, 4);
+            e.HasOne<Invoice>().WithMany().HasForeignKey(p => p.InvoiceId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         b.Entity<BusinessProfile>(e =>

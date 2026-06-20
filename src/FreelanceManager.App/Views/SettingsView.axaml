@@ -61,6 +61,40 @@
 
       <Border Classes="card">
         <StackPanel Spacing="10">
+          <TextBlock Classes="SectionHeading" Text="Email (SMTP)"/>
+          <TextBlock Classes="Caption" Text="Used to send invoices by email. Password is encrypted at rest."/>
+          <StackPanel Spacing="4">
+            <TextBlock Classes="FieldLabel" Text="SMTP host"/>
+            <TextBox Text="{Binding SmtpHost}" PlaceholderText="smtp.gmail.com"/>
+          </StackPanel>
+          <Grid ColumnDefinitions="*,Auto" >
+            <StackPanel Grid.Column="0" Margin="0,0,12,0" Spacing="4">
+              <TextBlock Classes="FieldLabel" Text="Port"/>
+              <TextBox Text="{Binding SmtpPort}" Width="100" HorizontalAlignment="Left"/>
+            </StackPanel>
+            <CheckBox Grid.Column="1" VerticalAlignment="Bottom" Content="Use SSL/TLS" IsChecked="{Binding SmtpUseSsl}"/>
+          </Grid>
+          <StackPanel Spacing="4">
+            <TextBlock Classes="FieldLabel" Text="Username"/>
+            <TextBox Text="{Binding SmtpUsername}"/>
+          </StackPanel>
+          <StackPanel Spacing="4">
+            <TextBlock Classes="FieldLabel" Text="Password"/>
+            <TextBox Text="{Binding SmtpPassword}" PasswordChar="•" PlaceholderText="Leave blank to keep current"/>
+          </StackPanel>
+          <StackPanel Spacing="4">
+            <TextBlock Classes="FieldLabel" Text="From email (defaults to business email)"/>
+            <TextBox Text="{Binding SmtpFromEmail}"/>
+          </StackPanel>
+          <StackPanel Spacing="4">
+            <TextBlock Classes="FieldLabel" Text="From name (defaults to business name)"/>
+            <TextBox Text="{Binding SmtpFromName}"/>
+          </StackPanel>
+        </StackPanel>
+      </Border>
+
+      <Border Classes="card">
+        <StackPanel Spacing="10">
           <TextBlock Classes="SectionHeading" Text="Appearance"/>
           <StackPanel Spacing="4">
             <TextBlock Classes="FieldLabel" Text="Theme"/>
