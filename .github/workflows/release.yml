@@ -1,29 +1,53 @@
 name: Release
 
-# Tag a commit `vX.Y.Z` to build a Velopack release and publish it to GitHub Releases.
-# The in-app updater (Settings → Check for updates) reads from these releases.
+# Pushing to master builds a Velopack release IF VersionPrefix in Directory.Build.props
+# is new (no matching vX.Y.Z tag yet). Bump the version to cut a release; otherwise the
+# push is a no-op. The in-app updater (Settings -> Check for updates) reads these releases.
 on:
   push:
-    tags: ['v*']
+    branches: [master]
 
 permissions:
-  contents: write   # vpk upload creates/edits the GitHub Release
+  contents: write   # push the version tag and create the GitHub Release
 
 jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.ver.outputs.version }}
+      exists: ${{ steps.ver.outputs.exists }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0   # need full tag history to detect existing releases
+
+      - name: Read version from Directory.Build.props
+        id: ver
+        shell: bash
+        run: |
+          v=$(grep -oP '(?<=<VersionPrefix>)[^<]+' Directory.Build.props)
+          echo "version=$v" >> "$GITHUB_OUTPUT"
+          if git rev-parse "v$v" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "Tag v$v already exists - skipping release."
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "Tag v$v is new - will release."
+          fi
+
   release:
+    needs: check
+    if: needs.check.outputs.exists == 'false'
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '10.0.x'
-
-      - name: Derive version from tag
-        id: ver
-        shell: bash
-        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
 
       - name: Install Velopack CLI
         run: dotnet tool install -g vpk
@@ -32,7 +56,12 @@ jobs:
         run: dotnet publish src/FreelanceManager.App/FreelanceManager.App.csproj -c Release -r win-x64 --self-contained -o publish
 
       - name: Pack
-        run: vpk pack --packId FreelanceManager --packTitle "Freelance Manager" --packVersion ${{ steps.ver.outputs.version }} --packDir publish --mainExe FreelanceManager.exe --icon src/FreelanceManager.App/Assets/app-icon.ico
+        run: vpk pack --packId FreelanceManager --packTitle "Freelance Manager" --packVersion ${{ needs.check.outputs.version }} --packDir publish --mainExe FreelanceManager.exe --icon src/FreelanceManager.App/Assets/app-icon.ico
+
+      - name: Tag release commit
+        run: |
+          git tag v${{ needs.check.outputs.version }}
+          git push origin v${{ needs.check.outputs.version }}
 
       - name: Upload to GitHub Release
-        run: vpk upload github --repoUrl https://github.com/catesweb/freelance-manager --publish --releaseName "v${{ steps.ver.outputs.version }}" --tag ${{ github.ref_name }} --token ${{ secrets.GITHUB_TOKEN }}
+        run: vpk upload github --repoUrl https://github.com/catesweb/freelance-manager --publish --releaseName "v${{ needs.check.outputs.version }}" --tag v${{ needs.check.outputs.version }} --token ${{ secrets.GITHUB_TOKEN }}
