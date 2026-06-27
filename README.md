@@ -1,6 +1,5 @@
-<p align="center"> 
-  [![Typing SVG](https://readme-typing-svg.demolab.com?font=Fira+Code&pause=1000&color=4262F7&background=4EC6FF00&vCenter=true&width=435&lines=Freelance+Manager)](https://git.io/typing-svg) 
-</p>
+
+<p align="center"> <a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=30&pause=1000&color=4262F7&background=4EC6FF00&center=true&vCenter=true&width=435&lines=Freelance+Manager" alt="Typing SVG" /></a></p>
 
 [![.NET](https://img.shields.io/badge/.NET-10-512BD4?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
 [![C#](https://img.shields.io/badge/C%23-239120?logo=csharp&logoColor=white)](https://learn.microsoft.com/dotnet/csharp/)
