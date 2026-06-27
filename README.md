@@ -132,3 +132,6 @@ The product version lives in one place — `<VersionPrefix>` in
 ## License
 
 Released under the [MIT License](LICENSE).
+
+## Designed By
+[Created & Maintained by](https://catesweb.com)
