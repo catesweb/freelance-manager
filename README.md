@@ -132,3 +132,5 @@ The product version lives in one place — `<VersionPrefix>` in
 ## License
 
 Released under the [MIT License](LICENSE).
+
+<a href="https://hits.sh/github.com/catesweb/"><img alt="Hits" src="https://hits.sh/github.com/catesweb.svg?style=plastic&label=repo%20views&color=26c210&labelColor=000000"/></a>
