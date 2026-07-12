@@ -19,7 +19,7 @@ public class StatusToBrushConverter : IValueConverter
         {
             "Paid" or "Complete" or "Active" => ("SuccessSubtle", "Success"),
             "Overdue" => ("DangerSubtle", "Danger"),
-            "Sent" => ("WarningSubtle", "Warning"),
+            "Sent" or "Due soon" => ("WarningSubtle", "Warning"),
             "Lead" or "Draft" => ("InfoSubtle", "Info"),
             "Archived" => ("InfoSubtle", "Info"),
             _ => ("InfoSubtle", "Info")

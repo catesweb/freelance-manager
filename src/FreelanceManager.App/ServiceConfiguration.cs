@@ -37,6 +37,8 @@ public static class ServiceConfiguration
         services.AddTransient<IBusinessProfileRepository, BusinessProfileRepository>();
         services.AddTransient<IPaymentRepository, PaymentRepository>();
 
+        services.AddTransient<SampleDataSeeder>();
+
         services.AddTransient<DashboardViewModel>();
         services.AddTransient<ClientsViewModel>();
         services.AddTransient<ProjectsViewModel>();

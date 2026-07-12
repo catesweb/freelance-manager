@@ -14,9 +14,39 @@
           <TextBlock Grid.Column="0" Classes="SectionHeading" Text="Welcome — let's get you set up"/>
           <Button Grid.Column="1" Classes="ghost" Content="Dismiss" Command="{Binding DismissOnboardingCommand}"/>
         </Grid>
-        <CheckBox IsChecked="{Binding StepProfileDone, Mode=OneWay}" IsHitTestVisible="False" Content="Add your business profile &amp; logo"/>
-        <CheckBox IsChecked="{Binding StepClientDone, Mode=OneWay}" IsHitTestVisible="False" Content="Add your first client"/>
-        <CheckBox IsChecked="{Binding StepInvoiceDone, Mode=OneWay}" IsHitTestVisible="False" Content="Create your first invoice"/>
+        <Button Classes="ghost" Padding="0" Command="{Binding OpenPageCommand}" CommandParameter="Settings">
+          <CheckBox IsChecked="{Binding StepProfileDone, Mode=OneWay}" IsHitTestVisible="False" Content="Add your business profile &amp; logo"/>
+        </Button>
+        <Button Classes="ghost" Padding="0" Command="{Binding OpenPageCommand}" CommandParameter="Clients">
+          <CheckBox IsChecked="{Binding StepClientDone, Mode=OneWay}" IsHitTestVisible="False" Content="Add your first client"/>
+        </Button>
+        <Button Classes="ghost" Padding="0" Command="{Binding OpenPageCommand}" CommandParameter="Invoices">
+          <CheckBox IsChecked="{Binding StepInvoiceDone, Mode=OneWay}" IsHitTestVisible="False" Content="Create your first invoice"/>
+        </Button>
+        <Button Classes="secondary" Content="Load sample data" Command="{Binding LoadSampleDataCommand}"
+                ToolTip.Tip="Adds a few example clients, projects, and invoices so you can explore. Their names end in (Sample); delete them like any record."/>
+      </StackPanel>
+    </Border>
+
+    <!-- needs attention -->
+    <Border Classes="card" IsVisible="{Binding HasAttention}">
+      <StackPanel Spacing="8">
+        <TextBlock Classes="SectionHeading" Text="Needs attention"/>
+        <ItemsControl ItemsSource="{Binding Attention}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Button Classes="ghost" HorizontalAlignment="Stretch" Padding="4"
+                      Command="{Binding $parent[ItemsControl].((vm:DashboardViewModel)DataContext).OpenAttentionCommand}"
+                      CommandParameter="{Binding}">
+                <Grid ColumnDefinitions="110,*,Auto">
+                  <c:StatusBadge Grid.Column="0" Status="{Binding Kind}" HorizontalAlignment="Left"/>
+                  <TextBlock Grid.Column="1" Classes="Body" Text="{Binding Title}" VerticalAlignment="Center" Margin="8,0,0,0"/>
+                  <TextBlock Grid.Column="2" Classes="Caption" Text="{Binding Detail}" VerticalAlignment="Center"/>
+                </Grid>
+              </Button>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
       </StackPanel>
     </Border>
 
@@ -58,7 +88,11 @@
           <ItemsControl ItemsSource="{Binding PinnedProjects}">
             <ItemsControl.ItemTemplate>
               <DataTemplate>
-                <TextBlock Classes="Body" Margin="0,0,0,4" Text="{Binding Title}"/>
+                <Button Classes="ghost" Padding="4,2" HorizontalAlignment="Stretch"
+                        Command="{Binding $parent[ItemsControl].((vm:DashboardViewModel)DataContext).OpenProjectCommand}"
+                        CommandParameter="{Binding}">
+                  <TextBlock Classes="Body" Text="{Binding Title}"/>
+                </Button>
               </DataTemplate>
             </ItemsControl.ItemTemplate>
           </ItemsControl>

@@ -1,5 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using FreelanceManager.App.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FreelanceManager.App.ViewModels;
@@ -32,6 +34,29 @@ public partial class MainWindowViewModel : ViewModelBase
     public MainWindowViewModel(IServiceProvider services)
     {
         _services = services;
+
+        WeakReferenceMessenger.Default.Register<OpenProjectMessage>(this, (_, m) =>
+        {
+            ShowProjects();
+            if (CurrentPage is ProjectsViewModel vm) _ = vm.OpenAsync(m.Id);
+        });
+        WeakReferenceMessenger.Default.Register<OpenInvoiceMessage>(this, (_, m) =>
+        {
+            ShowInvoices();
+            if (CurrentPage is InvoicesViewModel vm) _ = vm.OpenAsync(m.Id);
+        });
+        WeakReferenceMessenger.Default.Register<OpenPageMessage>(this, (_, m) =>
+        {
+            switch (m.Page)
+            {
+                case "Clients": ShowClients(); break;
+                case "Projects": ShowProjects(); break;
+                case "Invoices": ShowInvoices(); break;
+                case "Settings": ShowSettings(); break;
+                default: ShowDashboard(); break;
+            }
+        });
+
         ShowDashboard();
     }
 

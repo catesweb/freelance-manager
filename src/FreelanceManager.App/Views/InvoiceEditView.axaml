@@ -13,6 +13,9 @@
             <Button Classes="primary" Content="Save invoice" Command="{Binding SaveCommand}"/>
             <Button Classes="secondary" Content="Export PDF" Command="{Binding ExportPdfCommand}"/>
             <Button Classes="secondary" Content="Send email" Command="{Binding SendEmailCommand}"/>
+            <Button Classes="secondary" Content="Send reminder" Command="{Binding SendReminderCommand}"
+                    IsVisible="{Binding CanSendReminder}"
+                    ToolTip.Tip="Email a payment reminder with the outstanding balance"/>
             <Button Classes="secondary" Content="Cancel" Command="{Binding CancelCommand}"/>
             <Button Classes="danger" Content="Delete" Command="{Binding DeleteCommand}"/>
           </StackPanel>

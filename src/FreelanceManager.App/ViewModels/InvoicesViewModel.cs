@@ -60,8 +60,13 @@ public partial class InvoicesViewModel : ViewModelBase
         OnPropertyChanged(nameof(IsNotEditing));
     }
 
+    /// <summary>Reminders only make sense for invoices awaiting payment.</summary>
+    public bool CanSendReminder =>
+        Selected?.Status is InvoiceStatus.Sent or InvoiceStatus.Overdue;
+
     partial void OnSelectedChanged(InvoiceRow? value)
     {
+        OnPropertyChanged(nameof(CanSendReminder));
         if (value is not null) _ = Edit();
     }
 
@@ -76,7 +81,16 @@ public partial class InvoicesViewModel : ViewModelBase
         _payments = payments; _email = email; _clock = clock;
         _dialogs = dialogs; _notes = notes;
         InvoicesView = new DataGridCollectionView(Invoices) { Filter = MatchesSearch };
-        _ = LoadAsync();
+        _initialLoad = LoadAsync();
+    }
+
+    private readonly Task _initialLoad;
+
+    /// <summary>Selects (and opens the editor for) an invoice once the list has loaded.</summary>
+    public async Task OpenAsync(int id)
+    {
+        await _initialLoad;
+        Selected = Invoices.FirstOrDefault(i => i.Id == id);
     }
 
     partial void OnSearchTextChanged(string value) => InvoicesView.Refresh();
@@ -305,6 +319,49 @@ public partial class InvoicesViewModel : ViewModelBase
         inv.Status = InvoiceStatus.Paid;
         await _invoices.UpdateAsync(inv);
         await LoadAsync();
+    }
+
+    [RelayCommand]
+    private async Task SendReminder()
+    {
+        if (Selected is null) return;
+        try
+        {
+            var invoice = await _invoices.GetAsync(Selected.Id);
+            if (invoice is null) return;
+
+            var profile = await _profiles.GetAsync();
+            if (!_email.IsConfigured(profile))
+            {
+                _notes.Show("Configure SMTP under Settings before sending.", NotificationKind.Error);
+                return;
+            }
+            var to = invoice.Client?.Email;
+            if (string.IsNullOrWhiteSpace(to))
+            {
+                _notes.Show("This client has no email address.", NotificationKind.Error);
+                return;
+            }
+            if (!await _dialogs.ConfirmAsync("Send reminder",
+                    $"Email a payment reminder for {invoice.Number} to {to}?", "Send"))
+                return;
+
+            string pdfPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"{invoice.Number}.pdf");
+            _pdf.ExportInvoice(invoice, profile, pdfPath);
+
+            decimal paid = await _payments.GetTotalPaidAsync(invoice.Id);
+            string subject = ReminderEmail.Subject(invoice, profile.Name);
+            string body = ReminderEmail.Body(invoice, paid, profile.Name, _clock.Today);
+
+            await _email.SendAsync(profile, to!, invoice.Client?.Name, subject, body, pdfPath);
+            try { System.IO.File.Delete(pdfPath); } catch { /* temp file cleanup is best-effort */ }
+
+            _notes.Show($"Reminder emailed to {to}.", NotificationKind.Success);
+        }
+        catch (System.Exception ex)
+        {
+            _notes.Show($"Send failed: {ex.Message}", NotificationKind.Error);
+        }
     }
 
     [RelayCommand]

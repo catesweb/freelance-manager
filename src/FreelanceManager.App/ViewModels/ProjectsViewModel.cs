@@ -42,6 +42,8 @@ public partial class ProjectsViewModel : ViewModelBase
         if (value is not null) Edit();
     }
 
+    private readonly Task _initialLoad;
+
     public ProjectsViewModel(IProjectRepository projects, IClientRepository clients, IDialogService dialogs, INotificationService notes)
     {
         _projects = projects;
@@ -49,7 +51,14 @@ public partial class ProjectsViewModel : ViewModelBase
         _dialogs = dialogs;
         _notes = notes;
         ProjectsView = new DataGridCollectionView(Projects) { Filter = MatchesSearch };
-        _ = LoadAsync();
+        _initialLoad = LoadAsync();
+    }
+
+    /// <summary>Selects (and opens the editor for) a project once the list has loaded.</summary>
+    public async Task OpenAsync(int id)
+    {
+        await _initialLoad;
+        Selected = Projects.FirstOrDefault(p => p.Id == id);
     }
 
     partial void OnSearchTextChanged(string value) => ProjectsView.Refresh();

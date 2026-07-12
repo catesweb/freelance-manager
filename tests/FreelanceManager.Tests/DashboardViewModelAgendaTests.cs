@@ -66,6 +66,18 @@ public class DashboardViewModelAgendaTests
         public Task DeleteAsync(int id) => Task.CompletedTask;
     }
 
+    private sealed class StubPaymentRepo : IPaymentRepository
+    {
+        public Task<List<Payment>> GetForInvoiceAsync(int invoiceId) => Task.FromResult(new List<Payment>());
+        public Task<decimal> GetTotalPaidAsync(int invoiceId) => Task.FromResult(0m);
+        public Task AddAsync(Payment payment) => Task.CompletedTask;
+        public Task DeleteAsync(int id) => Task.CompletedTask;
+    }
+
+    private static SampleDataSeeder BuildSeeder()
+        => new SampleDataSeeder(new StubClientRepo(), new StubProjectRepo(Array.Empty<Project>()),
+            new StubInvoiceRepo(), new StubPaymentRepo(), new StubProfileRepo(), new FixedClock());
+
     private static DashboardViewModel BuildVm(IEnumerable<Project> projects)
         => new DashboardViewModel(
             new StubProjectRepo(projects),
@@ -74,7 +86,8 @@ public class DashboardViewModelAgendaTests
             new SilentNotifications(),
             new StubAppState(),
             new StubProfileRepo(),
-            new StubClientRepo());
+            new StubClientRepo(),
+            BuildSeeder());
 
     [Fact]
     public async Task Pinned_shows_active_newest_first_capped_at_five()

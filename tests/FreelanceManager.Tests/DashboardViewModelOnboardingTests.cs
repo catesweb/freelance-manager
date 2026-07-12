@@ -76,7 +76,19 @@ public class DashboardViewModelOnboardingTests
         public void Show(string message, NotificationKind kind = NotificationKind.Info) { }
     }
 
+    private sealed class StubPaymentRepo : IPaymentRepository
+    {
+        public Task<List<Payment>> GetForInvoiceAsync(int invoiceId) => Task.FromResult(new List<Payment>());
+        public Task<decimal> GetTotalPaidAsync(int invoiceId) => Task.FromResult(0m);
+        public Task AddAsync(Payment payment) => Task.CompletedTask;
+        public Task DeleteAsync(int id) => Task.CompletedTask;
+    }
+
     // ── fixture helper ────────────────────────────────────────────────────────
+
+    private static SampleDataSeeder BuildSeeder()
+        => new SampleDataSeeder(new StubClientRepo(), new StubProjectRepo(),
+            new StubInvoiceRepo(), new StubPaymentRepo(), new StubProfileRepo(), new FixedClock());
 
     /// <summary>Fresh VM: empty data, onboarding not dismissed.</summary>
     private static (DashboardViewModel vm, StubAppState appState) Fresh()
@@ -89,7 +101,8 @@ public class DashboardViewModelOnboardingTests
             new SilentNotifications(),
             appState,
             new StubProfileRepo(),
-            new StubClientRepo());
+            new StubClientRepo(),
+            BuildSeeder());
         return (vm, appState);
     }
 
@@ -126,7 +139,8 @@ public class DashboardViewModelOnboardingTests
             new SilentNotifications(),
             appState,
             new StubProfileRepo(),
-            new StubClientRepo());
+            new StubClientRepo(),
+            BuildSeeder());
 
         await vm.RefreshAsync();
         Assert.False(vm.ShowOnboarding);
@@ -146,7 +160,8 @@ public class DashboardViewModelOnboardingTests
             new SilentNotifications(),
             new StubAppState(),
             new StubProfileRepo(profile),
-            new StubClientRepo(new[] { client }));
+            new StubClientRepo(new[] { client }),
+            BuildSeeder());
 
         await vm.RefreshAsync();
         Assert.True(vm.StepProfileDone);

@@ -35,6 +35,9 @@ public static class TestServices
         sc.AddTransient<IProjectRepository, FakeProjectRepository>();
         sc.AddTransient<IInvoiceRepository, FakeInvoiceRepository>();
         sc.AddTransient<IBusinessProfileRepository, FakeBusinessProfileRepository>();
+        sc.AddTransient<IPaymentRepository, FakePaymentRepository>();
+
+        sc.AddTransient<SampleDataSeeder>();
 
         // ViewModels
         sc.AddTransient<DashboardViewModel>();
@@ -119,6 +122,14 @@ public static class TestServices
     {
         public Task<BusinessProfile> GetAsync() => Task.FromResult(new BusinessProfile());
         public Task SaveAsync(BusinessProfile p) => Task.CompletedTask;
+    }
+
+    private sealed class FakePaymentRepository : IPaymentRepository
+    {
+        public Task<List<Payment>> GetForInvoiceAsync(int invoiceId) => Task.FromResult(new List<Payment>());
+        public Task<decimal> GetTotalPaidAsync(int invoiceId) => Task.FromResult(0m);
+        public Task AddAsync(Payment payment) => Task.CompletedTask;
+        public Task DeleteAsync(int id) => Task.CompletedTask;
     }
 
     private sealed class FakeAppStateService : IAppStateService
