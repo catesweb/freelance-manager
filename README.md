@@ -147,3 +147,5 @@ Released under the [MIT License](LICENSE).
 
 ## Designed By
 [Created & Maintained by CATESWEB.COM](https://catesweb.com)
+
+<a href="https://hits.sh/github.com/catesweb/"><img alt="Hits" src="https://hits.sh/github.com/catesweb.svg?style=plastic&label=repo%20views&color=26c210&labelColor=000000"/></a>
