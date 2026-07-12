@@ -14,9 +14,9 @@
 A native, **local-first** Windows desktop application for freelance web designers to manage
 clients, projects, and invoices in one place. All data lives on your machine — no cloud
 account or server required — and the app works fully offline, reaching the internet only for
-opt-in features (e.g. future invoice sending and payments).
+opt-in features (SMTP invoice email and update checks).
 
-> **Status:** Foundation build complete — builds clean, 50/50 tests passing.
+> **Status:** Actively developed — builds clean, 78/78 tests passing.
 > This README is kept continuously up to date as the project evolves.
 
 ---
@@ -49,15 +49,23 @@ Cross-platform by design (Windows first; macOS later with no rewrite).
   subtotal/tax/total, auto invoice numbering from a configurable format, statuses
   (Draft/Sent/Paid) with **derived Overdue** — settable inline from the list pill — and
   branded **PDF export**.
+- **Payments** — record partial/full payments per invoice (auto-marks Paid when covered),
+  running balance shown in the editor.
+- **Email** — send an invoice (PDF attached) over your own SMTP, and one-click
+  **payment reminders** for sent/overdue invoices that quote the outstanding balance.
+- **Dashboard** — a **"Needs attention" inbox** (overdue invoices, items due within a week,
+  stale leads) where every row opens the exact record, a this-week agenda, active-project
+  shortcuts, key totals, and a welcome checklist with **one-click sample data** for a
+  fresh install.
+- **Search** — filter clients, projects, and invoices lists as you type.
 - **Settings** — business profile (name, address, logo, email), default currency, default tax
-  rate, invoice-number format, and a one-click timestamped **Backup**.
-- **Dashboard** — active project count, outstanding invoice total, overdue count.
+  rate, invoice-number format, SMTP config with a **connection test**, System/Light/Dark
+  theme (applies instantly), and a one-click timestamped **Backup**.
+- **In-app updates** — the installed app checks GitHub Releases and updates itself.
 - **Themed toast notifications** — success/error feedback styled to the app's design tokens
   (light/dark aware).
 
 **Deferred (data captured now; engines later)**
-- Invoice email sending.
-- Payment integration.
 - Project end-of-project **auto-scrape summary** (generate a customer handover document from
   the GitHub repo / live site). The "Generate summary" button is present but disabled.
 
@@ -96,20 +104,21 @@ dotnet run --project src/FreelanceManager.App   # launch the app
 
 The database and backups are created under `%AppData%\FreelanceManager\`
 (`freelance-manager.db`, `backups/`). EF Core migrations are applied automatically on startup.
+Set the `FREELANCEMANAGER_DATA_DIR` environment variable to point the app at a different
+data directory (useful for testing against a scratch database).
 
 ## Releases & updates
 
 Distribution is a **Velopack** installer (per-user managed folders), not a loose
-self-contained exe. Pushing a `vX.Y.Z` tag runs [`release.yml`](.github/workflows/release.yml),
-which publishes, packs, and uploads the release to GitHub Releases.
+self-contained exe. Pushing to `master` runs [`release.yml`](.github/workflows/release.yml):
+if `<VersionPrefix>` in [`Directory.Build.props`](Directory.Build.props) has no matching
+`vX.Y.Z` tag yet, the workflow publishes, packs, tags, and uploads the release to GitHub
+Releases; otherwise the push is a no-op. **Bumping the version is what cuts a release.**
 
 The installed app checks GitHub Releases for newer versions: silently on startup
 (notifies only if one is waiting) and on demand via **Settings → Check for updates**,
 which downloads and restarts into the new version. Both are no-ops in a dev/unpackaged
 run, so updates only work once installed from a release.
-
-The product version lives in one place — `<VersionPrefix>` in
-[`Directory.Build.props`](Directory.Build.props). Bump it, then tag the same value to cut a release.
 
 ## Branching & workflow
 
@@ -120,14 +129,17 @@ The product version lives in one place — `<VersionPrefix>` in
 
 ## Documentation
 
-- Design spec: [`docs/specs/2026-06-16-freelance-manager-foundation-design.md`](docs/specs/2026-06-16-freelance-manager-foundation-design.md)
-- Implementation plan: [`docs/plans/2026-06-16-freelance-manager-foundation.md`](docs/plans/2026-06-16-freelance-manager-foundation.md)
+- Foundation design spec: [`docs/specs/2026-06-16-freelance-manager-foundation-design.md`](docs/specs/2026-06-16-freelance-manager-foundation-design.md)
+- Foundation implementation plan: [`docs/plans/2026-06-16-freelance-manager-foundation.md`](docs/plans/2026-06-16-freelance-manager-foundation.md)
+- Latest design spec: [`docs/specs/2026-07-12-dark-mode-attention-inbox-design.md`](docs/specs/2026-07-12-dark-mode-attention-inbox-design.md)
 
 ## Roadmap
 
-1. Invoice email sending (SMTP + PDF attachment).
-2. Payment tracking, then online payment providers.
-3. Project auto-scrape summary / customer handover document.
+1. Proposals / estimates that convert into a project and first invoice.
+2. Time tracking and per-client profitability.
+3. Recurring invoices.
+4. Online payment providers (extends manual payment tracking).
+5. Project auto-scrape summary / customer handover document.
 
 ## License
 
