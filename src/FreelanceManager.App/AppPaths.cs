@@ -6,8 +6,10 @@ public static class AppPaths
     {
         get
         {
-            string root = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            string dir = Path.Combine(root, "FreelanceManager");
+            // Override for tests/portable use; normal installs use %AppData%.
+            string dir = Environment.GetEnvironmentVariable("FREELANCEMANAGER_DATA_DIR")
+                ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                                "FreelanceManager");
             Directory.CreateDirectory(dir);
             return dir;
         }

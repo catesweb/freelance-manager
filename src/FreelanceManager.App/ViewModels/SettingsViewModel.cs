@@ -37,6 +37,9 @@ public partial class SettingsViewModel : ViewModelBase
 
     public static ThemeMode[] ThemeOptions { get; } = System.Enum.GetValues<ThemeMode>();
 
+    // Apply immediately so the combo gives instant feedback; Save persists the choice.
+    partial void OnThemeChanged(ThemeMode value) => _themeService.Apply(value);
+
     public string AppVersion => _updates.CurrentVersion;
 
     public SettingsViewModel(IBusinessProfileRepository profiles, IBackupService backup, IThemeService themeService, INotificationService notes, IUpdateService updates, IEmailSender email)

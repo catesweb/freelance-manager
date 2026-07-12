@@ -51,6 +51,12 @@
     <Setter Property="CornerRadius" Value="{DynamicResource RadiusSm}"/>
   </Style>
 
+  <!-- DataGrid: the Fluent theme's header defaults to black in dark mode; use our tokens -->
+  <Style Selector="DataGridColumnHeader">
+    <Setter Property="Background" Value="{DynamicResource BgSurface}"/>
+    <Setter Property="Foreground" Value="{DynamicResource TextMuted}"/>
+  </Style>
+
   <Style Selector="Button.nav">
     <Setter Property="HorizontalAlignment" Value="Stretch"/>
     <Setter Property="HorizontalContentAlignment" Value="Left"/>

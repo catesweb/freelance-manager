@@ -18,6 +18,7 @@
           <ResourceInclude Source="avares://FreelanceManager/Themes/Notifications.axaml"/>
         </ResourceDictionary.MergedDictionaries>
         <conv:BoolToGridLengthConverter x:Key="BoolToGridLength"/>
+        <conv:OptionalDateConverter x:Key="OptionalDate"/>
       </ResourceDictionary>
     </Application.Resources>
 
